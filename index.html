@@ -3,6 +3,23 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>T-Petie Beauty Center</title>
+<link rel="manifest" href="manifest.json">
+
+{
+  "name": "T-Petie Beauty",
+  "short_name": "T-Petie",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff9900",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
 
 <style>
 body {
@@ -336,6 +353,27 @@ body {
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// expose to window so other scripts can use
+window.auth = auth;
+window.db = db;
+window._fb = { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut };
+</script>
 
 <!-- JS -->
 <script>
@@ -583,6 +621,80 @@ function loadProducts(){
 loadProducts();
 
 
+function register(){
+  const { createUserWithEmailAndPassword } = window._fb;
+  createUserWithEmailAndPassword(window.auth, email.value, password.value)
+    .then(()=> alert("Registered"))
+    .catch(e=> alert(e.message));
+}
+
+function login(){
+  const { signInWithEmailAndPassword } = window._fb;
+  signInWithEmailAndPassword(window.auth, email.value, password.value)
+    .then(()=> alert("Logged in"))
+    .catch(e=> alert(e.message));
+}
+
+function logout(){
+  const { signOut } = window._fb;
+  signOut(window.auth);
+}
+
+window._fb.onAuthStateChanged(window.auth, user=>{
+  document.getElementById("user-status").innerText = user ? "Logged in: " + user.email : "Not logged in";
+});
+
+
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+async function saveOrder(user, cart){
+  if(!user){ alert("Login first"); return; }
+
+  await addDoc(collection(window.db, "orders"), {
+    userId: user.uid,
+    items: cart,
+    total: getCartTotal(),
+    status: "Pending",
+    createdAt: serverTimestamp()
+  });
+
+  alert("Order placed!");
+}
+
+const user = window.auth.currentUser;
+saveOrder(user, cart);
+
+<script type="module">
+import { collection, query, where, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+async function loadOrders(){
+  const user = window.auth.currentUser;
+  if(!user) return;
+
+  const q = query(collection(window.db, "orders"), where("userId","==",user.uid));
+  const snap = await getDocs(q);
+
+  let box = document.getElementById("orders");
+  box.innerHTML = "";
+
+  snap.forEach(doc=>{
+    const o = doc.data();
+    box.innerHTML += `
+      <div style="background:#fff;padding:10px;margin-bottom:10px;">
+        <strong>Status:</strong> ${o.status}<br>
+        <strong>Total:</strong> UGX ${o.total}
+      </div>
+    `;
+  });
+}
+
+// reload when user logs in
+window._fb.onAuthStateChanged(window.auth, user=>{
+  if(user) loadOrders();
+});
+
+
 </script>
 
 <button onclick="payNow()">Pay Now</button>
@@ -607,6 +719,21 @@ align-items:center;
     <button onclick="closePopup()">Close</button>
 </div>
 
+</div>
+
+<div id="auth-box" style="padding:15px;background:#fff;margin:10px;border-radius:10px;">
+  <h3>Account</h3>
+  <input id="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Password"><br><br>
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+  <button onclick="logout()">Logout</button>
+  <p id="user-status"></p>
+</div>
+
+<div style="padding:10px;">
+  <h3>My Orders</h3>
+  <div id="orders"></div>
 </div>
 
 
