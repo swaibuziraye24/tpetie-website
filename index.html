@@ -629,16 +629,7 @@ function adminLogin(){
     }
 }
 
-import { getStorage, ref, uploadBytes, getDownloadURL } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-const storage = getStorage();
-
-async function uploadImage(file){
-    const storageRef = ref(storage, "products/" + file.name);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
-}
 </script>
 
 <button onclick="payNow()">Pay Now</button>
@@ -670,6 +661,17 @@ align-items:center;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import { getStorage, ref, uploadBytes, getDownloadURL } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const storage = getStorage();
+
+async function uploadImage(file){
+    const storageRef = ref(storage, "products/" + file.name);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+}
 
 // 🔴 PUT YOUR REAL CONFIG HERE
 const firebaseConfig = {
@@ -743,6 +745,8 @@ window.deleteProduct = async function(id){
 
 // LOAD ON START
 loadProducts();
+
+
 </script>
 </body>
 </html>
