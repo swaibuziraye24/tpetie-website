@@ -780,110 +780,69 @@ async function addProduct(){
 
 async function loadProducts(){
 
-    let container = document.getElementById("product-list");
+    const container = document.getElementById("product-list");
 
-    // KEEP existing HTML products first
-    let htmlBackup = container.innerHTML;
+    try {
 
-    try{
-        let snap = await window.fb.getDocs(
-            window.fb.collection(window.db,"products")
+        container.innerHTML = "";
+
+        const snap = await window.fb.getDocs(
+            window.fb.collection(window.db, "products")
         );
 
-        let firebaseHTML = "";
+        snap.forEach(docSnap => {
 
-        snap.forEach(doc=>{
-            let p = doc.data();
+            const p = docSnap.data();
 
-            firebaseHTML += `
+            if (!p.name || !p.price) return; // safety check
+
+            container.innerHTML += `
             <div class="product ${p.category}">
                 <img src="${p.image}">
                 <h3>${p.name}</h3>
-                <p class="price">UGX ${p.price}</p>
-                <button onclick="addToCart('${p.name}',${p.price})">Add</button>
+                <p class="price">UGX ${Number(p.price).toLocaleString()}</p>
+                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
             </div>
             `;
         });
 
-        // combine BOTH
-        container.innerHTML = htmlBackup + firebaseHTML;
-
-    } catch(err){
-        console.log("Firebase load error:", err);
-
-        // fallback: keep static products
-        container.innerHTML = htmlBackup;
-    }
-}
-
-async function checkout(){
-
-    let user = window.auth.currentUser;
-
-    if(!user){
-        alert("Please login first before ordering");
-        return;
-    }
-
-    let total = 0;
-    let items = [];
-
-    cart.forEach(item=>{
-        let t = item.price * item.qty;
-        total += t;
-
-        items.push({
-            name: item.name,
-            qty: item.qty,
-            price: item.price,
-            total: t
-        });
-    });
-
-   window.fb.onAuthStateChanged(window.auth, user=>{
-    let status = document.getElementById("user-status");
-
-    if(user){
-        status.innerText = "Logged in: " + user.email;
-        loadUserOrders();
-    } else {
-        status.innerText = "Not logged in";
-    }
-});
-
-    await window.fb.addDoc(
-        window.fb.collection(window.db,"orders"),
-        {
-            userId: user.uid,
-            items: items,
-            total: total,
-            status: "Pending",
-            createdAt: window.fb.serverTimestamp()
+        // if empty
+        if (snap.empty) {
+            container.innerHTML = "<p>No products available</p>";
         }
-    );
 
-    alert("Order placed successfully!");
-    cart = [];
-    saveCart();
-    updateCart();
+    } catch (err) {
+        console.error("Load error:", err);
+        container.innerHTML = "<p style='color:red'>Failed to load products</p>";
+    }
 }
+
+
 
 async function loadUserOrders(){
 
     let user = window.auth.currentUser;
-    if(!user) return;
+    if (!user) return;
 
     let box = document.getElementById("orders");
+    if (!box) return;
+
     box.innerHTML = "";
 
-    let q = window.fb.query(
-        window.fb.collection(window.db,"orders"),
-        window.fb.where("userId","==",user.uid)
+    const q = window.fb.query(
+        window.fb.collection(window.db, "orders"),
+        window.fb.where("userId", "==", user.uid)
     );
 
-    let snap = await window.fb.getDocs(q);
+    const snap = await window.fb.getDocs(q);
 
-    snap.forEach(doc=>{
+    if (snap.empty) {
+        box.innerHTML = "<p>No orders yet</p>";
+        return;
+    }
+
+    snap.forEach(doc => {
+
         let o = doc.data();
 
         box.innerHTML += `
@@ -893,6 +852,61 @@ async function loadUserOrders(){
         </div>
         `;
     });
+}
+
+async function checkout(){
+
+    let user = window.auth.currentUser;
+
+    if (!user) {
+        alert("You must login first");
+        return;
+    }
+
+    if (cart.length === 0) {
+        alert("Cart is empty");
+        return;
+    }
+
+    let total = 0;
+
+    let items = cart.map(item => {
+        let t = item.price * item.qty;
+        total += t;
+
+        return {
+            name: item.name,
+            qty: item.qty,
+            price: item.price,
+            total: t
+        };
+    });
+
+    try {
+
+        await window.fb.addDoc(
+            window.fb.collection(window.db, "orders"),
+            {
+                userId: user.uid,
+                items: items,
+                total: total,
+                status: "Pending",
+                createdAt: window.fb.serverTimestamp()
+            }
+        );
+
+        alert("Order placed successfully!");
+
+        cart = [];
+        saveCart();
+        updateCart();
+
+        loadUserOrders();
+
+    } catch (err) {
+        console.error("Order failed:", err);
+        alert("Order failed. Try again.");
+    }
 }
 
 function payNow(){
@@ -944,6 +958,21 @@ loadAllOrders();
 window.onload = function(){
     loadProducts();
 };
+
+function initSystem(){
+
+    console.log("T-Petie system starting...");
+
+    loadProducts();
+    updateCart();
+
+    let user = window.auth?.currentUser;
+    if (user) {
+        loadUserOrders();
+    }
+}
+
+window.addEventListener("load", initSystem);
 </script>
 
 
