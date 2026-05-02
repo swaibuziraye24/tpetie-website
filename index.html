@@ -651,13 +651,32 @@ align-items:center;
 </div>
 
 <!-- ADMIN ORDERS -->
-<div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
-<h2>Admin Dashboard</h2>
-<div id="admin-orders"></div>
+<div style="padding:15px;background:#fff;margin:10px;border-radius:10px;">
+  <h2>🔥 Admin Panel</h2>
+
+  <h3>Add Product</h3>
+
+  <input id="admin-name" placeholder="Product name"><br><br>
+  <input id="admin-price" placeholder="Price"><br><br>
+  <input id="admin-image" placeholder="Image URL"><br><br>
+
+  <select id="admin-category">
+    <option value="perfume">Perfume</option>
+    <option value="cosmetics">Cosmetics</option>
+    <option value="bags">Bags</option>
+  </select><br><br>
+
+  <button onclick="adminAddProduct()">➕ Add Product</button>
+
+  <hr>
+
+  <h3>All Products</h3>
+  <div id="admin-products"></div>
 </div>
 
 <!-- FIREBASE (MODERN ONLY ONCE) -->
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
 getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
@@ -817,7 +836,58 @@ async function loadProducts(){
     }
 }
 
+async function adminAddProduct(){
 
+    const name = document.getElementById("admin-name").value;
+    const price = document.getElementById("admin-price").value;
+    const image = document.getElementById("admin-image").value;
+    const category = document.getElementById("admin-category").value;
+
+    if(!name || !price){
+        alert("Fill all fields");
+        return;
+    }
+
+    await window.fb.addDoc(
+        window.fb.collection(window.db,"products"),
+        {
+            name,
+            price: Number(price),
+            image,
+            category
+        }
+    );
+
+    alert("Product added!");
+
+    loadProducts();       // refresh shop
+    loadAdminProducts();  // refresh admin panel
+}
+
+async function loadAdminProducts(){
+
+    let box = document.getElementById("admin-products");
+    box.innerHTML = "";
+
+    const snap = await window.fb.getDocs(
+        window.fb.collection(window.db,"products")
+    );
+
+    snap.forEach(docSnap => {
+
+        let p = docSnap.data();
+
+        box.innerHTML += `
+        <div style="border:1px solid #ddd;padding:10px;margin:10px;border-radius:10px;">
+            <b>${p.name}</b><br>
+            UGX ${p.price}<br>
+            <img src="${p.image}" width="80"><br><br>
+
+            <button onclick="deleteProduct('${docSnap.id}')">🗑 Delete</button>
+        </div>
+        `;
+    });
+}
 
 async function loadUserOrders(){
 
@@ -852,6 +922,17 @@ async function loadUserOrders(){
         </div>
         `;
     });
+}
+
+async function deleteProduct(id){
+
+    await window.fb.deleteDoc(
+        window.fb.doc(window.db,"products",id)
+    );
+
+    alert("Deleted!");
+    loadProducts();
+    loadAdminProducts();
 }
 
 async function checkout(){
@@ -973,6 +1054,11 @@ function initSystem(){
 }
 
 window.addEventListener("load", initSystem);
+function refreshAll(){
+    loadProducts();
+    loadAdminProducts();
+}
+loadAdminProducts();
 </script>
 
 
