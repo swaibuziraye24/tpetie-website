@@ -4,221 +4,666 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>T-Petie Beauty Center</title>
 
-<link rel="manifest" href="manifest.json">
-
 <style>
-body { margin:0; font-family:Arial; background:#f5f5f5; }
-
-.topbar{
-background:#ff9900;color:white;
-display:flex;justify-content:space-between;
-padding:10px;position:sticky;top:0;z-index:1000;
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f5f5f5;
 }
 
-.search{width:50%;padding:8px;border:none;border-radius:5px;}
-
-.hero{height:200px;background:url("banner.jpg") center/cover;margin:10px;border-radius:10px;}
-
-.categories{display:flex;gap:10px;overflow-x:auto;padding:10px;background:#fff;}
-.categories button{padding:8px;border:none;border-radius:20px;}
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:10px;padding:10px;
+/* TOP BAR */
+.topbar {
+    background: #ff9900;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    color: white;
 }
 
-.product{
-background:white;padding:10px;border-radius:8px;text-align:center;
+/* SEARCH */
+.search {
+    width: 50%;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
 }
 
-.product img{width:100%;height:140px;object-fit:cover;}
-
-.price{color:orange;font-weight:bold;}
-
-button{background:#ff6600;color:white;border:none;padding:8px;width:100%;margin-top:5px;}
-
-#cart-box{
-position:fixed;right:0;top:0;width:300px;height:100%;
-background:white;display:none;padding:10px;overflow:auto;
+/* HERO */
+.hero {
+    background: url("beauty.jpg") center/cover;
+    height: 200px;
+    margin: 10px;
+    border-radius: 10px;
 }
+
+/* CATEGORY BUTTONS */
+.categories {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+    background: white;
+}
+
+.categories button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    background: #eee;
+    cursor: pointer;
+}
+
+.categories button.active {
+    background: #ff9900;
+    color: white;
+}
+
+/* PRODUCTS */
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    padding: 10px;
+}
+
+.product {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.price {
+    color: #ff9900;
+    font-weight: bold;
+}
+
+.product button {
+    background: #ff9900;
+    color: white;
+    border: none;
+    padding: 8px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* CART */
+#cart-box {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    background: white;
+    padding: 15px;
+    display: none;
+}
+
+.slider {
+    position: relative;
+}
+
+.slider img {
+    width: 100%;
+    display: none;
+    border-radius: 10px;
+}
+
+.slider img.active {
+    display: block;
+}
+
+body {
+    background: #f1f1f1;
+}
+
+.topbar {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.product {
+    transition: 0.3s;
+    border: 1px solid #eee;
+}
+
+.product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.product button {
+    background: #ff6600;
+}
+
+.product button:hover {
+    background: #e65c00;
+}
+
+.price {
+    font-size: 18px;
+}
+
+/* HEADER */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* GRID */
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+}
+
+/* PRODUCT CARD */
+.product {
+    border: 1px solid #eee;
+    transition: 0.3s;
+    background: white;
+}
+
+.product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* BUTTON */
+.product button {
+    background: #ff6600;
+    font-weight: bold;
+}
+
+/* HERO BANNER */
+.hero {
+    height: 250px;
+    background: url("banner.jpg") center/cover;
+    border-radius: 10px;
+}
+
+/* CATEGORY STYLE */
+.categories button {
+    font-size: 14px;
+}
+
+.product::after {
+    content: "SALE";
+    position: absolute;
+    background: red;
+    color: white;
+    padding: 3px 6px;
+    top: 5px;
+    left: 5px;
+    font-size: 10px;
+}
+
+
 </style>
 </head>
 
 <body>
 
+<!-- TOP -->
 <div class="topbar">
-<h3>T-Petie</h3>
-<input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
-<span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
+    <h2>T-Petie</h2>
+    <input class="search" placeholder="Search products...">
+    <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
 </div>
 
+<!-- HERO -->
 <div class="hero"></div>
 
+<!-- CATEGORIES -->
 <div class="categories">
-<button onclick="filter('all')">All</button>
-<button onclick="filter('perfume')">Perfume</button>
-<button onclick="filter('cosmetics')">Cosmetics</button>
-<button onclick="filter('bags')">Bags</button>
+    <button onclick="filterProducts('all')" class="active">All</button>
+    <button onclick="filterProducts('perfume')">Perfumes</button>
+    <button onclick="filterProducts('cosmetics')">Cosmetics</button>
+    <button onclick="filterProducts('bags')">Bags</button>
 </div>
 
-<!-- ADMIN -->
-<div style="background:#fff;margin:10px;padding:10px;">
-<h3>Admin Add Product</h3>
-<input id="name" placeholder="Name"><br><br>
-<input id="price" placeholder="Price"><br><br>
-<input id="image" placeholder="Image URL"><br><br>
+<div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
+    <h3>Add Product (Admin)</h3>
 
-<select id="category">
-<option value="perfume">Perfume</option>
-<option value="cosmetics">Cosmetics</option>
-<option value="bags">Bags</option>
-</select><br><br>
+    <input id="p-name" placeholder="Product name"><br><br>
+    <input id="p-price" placeholder="Price"><br><br>
+    <input id="p-image" placeholder="Image file name (e.g bag.jpg)"><br><br>
 
-<button onclick="addProduct()">Add Product</button>
+    <select id="p-category">
+        <option value="perfume">Perfume</option>
+        <option value="cosmetics">Cosmetics</option>
+        <option value="bags">Bags</option>
+    </select><br><br>
+
+    <button onclick="addProduct()">Add Product</button>
 </div>
 
-<div class="products" id="product-list"></div>
+<!-- PRODUCTS -->
+<div class="products">
+
+    <div class="product perfume">
+        <img src="perfume.jpg">
+        <h3>Luxury Perfume</h3>
+        <p class="price">UGX 80,000</p>
+        <button onclick="addToCart('Luxury Perfume', 80000)">Add</button>
+    </div>
+
+    <div class="product cosmetics">
+        <img src="cosmetics.jpg">
+        <h3>Makeup Kit</h3>
+        <p class="price">UGX 120,000</p>
+        <button onclick="addToCart('Makeup Kit', 120000)">Add</button>
+    </div>
+
+    <div class="product bags">
+        <img src="bag.jpg">
+        <h3>Ladies Handbag</h3>
+        <p class="price">UGX 95,000</p>
+        <button onclick="addToCart('Ladies Handbag', 95000)">Add</button>
+    </div>
+
+</div>
+
+<div class="slider">
+    <img src="perfume1.jpg" class="active">
+    <img src="perfume2.jpg">
+    <img src="perfume3.jpg">
+</div>
+
+<div class="products" id="product-list">
+
+    <!-- PERFUMES -->
+    <div class="product perfume">
+        <img src="perfume1.jpg">
+        <h3>Chanel Perfume</h3>
+        <p class="price">UGX 150,000</p>
+        <button onclick="addToCart('Chanel Perfume',150000)">Add</button>
+    </div>
+
+    <div class="product perfume">
+        <img src="perfume2.jpg">
+        <h3>Dior Sauvage</h3>
+        <p class="price">UGX 180,000</p>
+        <button onclick="addToCart('Dior Sauvage',180000)">Add</button>
+    </div>
+
+    <!-- COSMETICS -->
+    <div class="product cosmetics">
+        <img src="cosmetics1.jpg">
+        <h3>Full Makeup Kit</h3>
+        <p class="price">UGX 120,000</p>
+        <button onclick="addToCart('Full Makeup Kit',120000)">Add</button>
+    </div>
+
+    <div class="product cosmetics">
+        <img src="lipstick.jpg">
+        <h3>Matte Lipstick</h3>
+        <p class="price">UGX 25,000</p>
+        <button onclick="addToCart('Matte Lipstick',25000)">Add</button>
+    </div>
+
+    <!-- BAGS -->
+    <div class="product bags">
+        <img src="bag1.jpg">
+        <h3>Luxury Handbag</h3>
+        <p class="price">UGX 95,000</p>
+        <button onclick="addToCart('Luxury Handbag',95000)">Add</button>
+    </div>
+
+    <div class="product bags">
+        <img src="bag2.jpg">
+        <h3>Office Ladies Bag</h3>
+        <p class="price">UGX 85,000</p>
+        <button onclick="addToCart('Office Bag',85000)">Add</button>
+    </div>
+
+</div>
 
 <!-- CART -->
 <div id="cart-box">
-<h3>Cart</h3>
-<div id="cart-items"></div>
-<h3>Total: UGX <span id="total">0</span></h3>
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3>Total: UGX <span id="cart-total">0</span></h3>
+    <button onclick="checkout()">Checkout</button>
 </div>
 
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc,
-query,
-where,
-updateDoc,
-serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+
+<!-- JS -->
+<script>
+
+// ================= CART SYSTEM =================
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function addToCart(name, price) {
+    let existing = cart.find(item => item.name === name);
+
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({name, price, qty: 1});
+    }
+
+    saveCart();
+    updateCart();
+}
+
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function updateCart() {
+    let cartItems = document.getElementById("cart-items");
+    let cartCount = document.getElementById("cart-count");
+    let cartTotal = document.getElementById("cart-total");
+
+    if (!cartItems) return;
+
+    cartItems.innerHTML = "";
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        let itemTotal = item.price * item.qty;
+        total += itemTotal;
+
+        cartItems.innerHTML += `
+        <div style="margin-bottom:10px;">
+            <strong>${item.name}</strong><br>
+            UGX ${item.price} x ${item.qty} = ${itemTotal}<br>
+
+            <button onclick="changeQty(${index}, 1)">+</button>
+            <button onclick="changeQty(${index}, -1)">-</button>
+            <button onclick="removeItem(${index})">❌</button>
+        </div>
+        `;
+    });
+
+    if (cartCount) cartCount.innerText = cart.length;
+    if (cartTotal) cartTotal.innerText = total;
+}
+
+// CHANGE QTY
+function changeQty(index, change) {
+    cart[index].qty += change;
+
+    if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+    }
+
+    saveCart();
+    updateCart();
+}
+
+// REMOVE ITEM
+function removeItem(index) {
+    cart.splice(index, 1);
+    saveCart();
+    updateCart();
+}
+
+// TOGGLE CART
+function toggleCart() {
+    let box = document.getElementById("cart-box");
+    if (!box) return;
+    box.style.display = box.style.display === "block" ? "none" : "block";
+}
+
+
+// ================= WHATSAPP CHECKOUT =================
+function checkout() {
+    if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+    }
+
+    let phone = "256705816160"; // YOUR NUMBER
+    let message = "🛍 T-Petie Beauty Order:\n";
+
+    let total = 0;
+
+    cart.forEach(item => {
+        let itemTotal = item.price * item.qty;
+        total += itemTotal;
+
+        message += `- ${item.name} x${item.qty} = UGX ${itemTotal}\n`;
+    });
+
+    message += `\nTotal: UGX ${total}`;
+
+    let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
+}
+
+
+// ================= FILTER =================
+function filterProducts(category, el) {
+    let products = document.querySelectorAll(".product");
+    let buttons = document.querySelectorAll(".categories button");
+
+    buttons.forEach(btn => btn.classList.remove("active"));
+    if (el) el.classList.add("active");
+
+    products.forEach(product => {
+        if (category === "all" || product.classList.contains(category)) {
+            product.style.display = "block";
+        } else {
+            product.style.display = "none";
+        }
+    });
+}
+
+
+// ================= SEARCH =================
+function searchProducts(query) {
+    let products = document.querySelectorAll(".product");
+
+    query = query.toLowerCase();
+
+    products.forEach(product => {
+        let name = product.querySelector("h3").innerText.toLowerCase();
+
+        if (name.includes(query)) {
+            product.style.display = "block";
+        } else {
+            product.style.display = "none";
+        }
+    });
+}
+
+
+// ================= SLIDER =================
+setInterval(() => {
+    document.querySelectorAll(".slider").forEach(slider => {
+        let images = slider.querySelectorAll("img");
+        if (images.length === 0) return;
+
+        let index = [...images].findIndex(img => img.classList.contains("active"));
+        if (index === -1) index = 0;
+
+        images[index].classList.remove("active");
+        let next = (index + 1) % images.length;
+        images[next].classList.add("active");
+    });
+}, 3000);
+
+
+// ================= INIT =================
+updateCart();
+
+</script>
+
+
+function openPopup(name, price){
+    document.getElementById("popup").style.display="flex";
+    document.getElementById("popup-name").innerText=name;
+    document.getElementById("popup-price").innerText="UGX "+price;
+}
+
+
+function closePopup(){
+    document.getElementById("popup").style.display="none";
+}
+
+function checkout(){
+    let phone="2567XXXXXXXX"; // client number
+    let msg="🛍 T-Petie Beauty Order:\n";
+
+    let total=0;
+
+    cart.forEach(item=>{
+        let t=item.price*item.qty;
+        total+=t;
+        msg+=`- ${item.name} x${item.qty} = UGX ${t}\n`;
+    });
+
+    msg+=`\nTotal: UGX ${total}`;
+    msg+=`\nPayment: MTN/Airtel Mobile Money`;
+
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
+}
+
+
+function addProduct(){
+    let name = document.getElementById("p-name").value;
+    let price = document.getElementById("p-price").value;
+    let image = document.getElementById("p-image").value;
+    let category = document.getElementById("p-category").value;
+
+    let productHTML = `
+    <div class="product ${category}">
+        <img src="${image}">
+        <h3>${name}</h3>
+        <p class="price">UGX ${price}</p>
+        <button onclick="addToCart('${name}', ${price})">Add</button>
+    </div>
+    `;
+
+    document.getElementById("product-list").innerHTML += productHTML;
+}
+
+
+function getCartTotal(){
+    let total = 0;
+    cart.forEach(item=>{
+        total += item.price * item.qty;
+    });
+    return total;
+}
+
+function payNow(){
+    let total = getCartTotal();
+
+    if(total === 0){
+        alert("Cart is empty");
+        return;
+    }
+
+    FlutterwaveCheckout({
+        public_key: "FLWPUBK_TEST-XXXXXXXXX",
+        tx_ref: "tpetie_" + Date.now(),
+        amount: total,
+        currency: "UGX",
+        payment_options: "mobilemoneyuganda",
+        customer: {
+            email: "customer@email.com",
+            name: "Customer"
+        },
+        callback: function(response){
+            alert("Payment successful!");
+        },
+        customizations: {
+            title: "T-Petie Beauty",
+            description: "Order Payment"
+        }
+    });
+}
+
 
 const firebaseConfig = {
-apiKey: "YOUR_KEY",
-authDomain: "YOUR_PROJECT.firebaseapp.com",
-projectId: "YOUR_PROJECT"
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-window.db=db;
-window.fb={collection,addDoc,getDocs,deleteDoc,doc,query,where,updateDoc,serverTimestamp};
+
+function addProduct(){
+    let name = document.getElementById("p-name").value;
+    let price = document.getElementById("p-price").value;
+    let image = document.getElementById("p-image").value;
+    let category = document.getElementById("p-category").value;
+
+    db.collection("products").add({
+        name,
+        price,
+        image,
+        category
+    }).then(()=>{
+        alert("Product added!");
+        loadProducts();
+    });
+}
+
+
+function loadProducts(){
+    let container = document.getElementById("product-list");
+    container.innerHTML = "";
+
+    db.collection("products").get().then(snapshot=>{
+        snapshot.forEach(doc=>{
+            let p = doc.data();
+
+            container.innerHTML += `
+            <div class="product ${p.category}">
+                <img src="${p.image}">
+                <h3>${p.name}</h3>
+                <p class="price">UGX ${p.price}</p>
+                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+            </div>
+            `;
+        });
+    });
+}
+
+loadProducts();
+
+
 </script>
 
-<!-- APP -->
-<script>
-let cart=[];
+<button onclick="payNow()">Pay Now</button>
 
-/* CART */
-function addToCart(n,p){
-let i=cart.find(x=>x.name===n);
-i?i.qty++:cart.push({name:n,price:p,qty:1});
-updateCart();
-}
+<button onclick="openPopup('Luxury Perfume',80000)">View</button>
 
-function updateCart(){
-let box=document.getElementById("cart-items");
-let total=0;
-box.innerHTML="";
+<input class="search" placeholder="Search products..." onkeyup="searchProducts(this.value)">
 
-cart.forEach((i,idx)=>{
-total+=i.price*i.qty;
-box.innerHTML+=`
-<p>${i.name} x${i.qty} = ${i.price*i.qty}
-<button onclick="change(${idx},1)">+</button>
-<button onclick="change(${idx},-1)">-</button>
-</p>`;
-});
+<div id="popup" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+">
 
-document.getElementById("total").innerText=total;
-document.getElementById("cart-count").innerText=cart.length;
-}
+<div style="background:white;padding:20px;border-radius:10px;width:300px;">
+    <h3 id="popup-name"></h3>
+    <p id="popup-price"></p>
+    <button onclick="closePopup()">Close</button>
+</div>
 
-function change(i,v){
-cart[i].qty+=v;
-if(cart[i].qty<=0)cart.splice(i,1);
-updateCart();
-}
+</div>
 
-function toggleCart(){
-let b=document.getElementById("cart-box");
-b.style.display=b.style.display==="block"?"none":"block";
-}
-
-/* FILTER */
-function filter(c){
-document.querySelectorAll(".product").forEach(p=>{
-p.style.display=(c==="all"||p.classList.contains(c))?"block":"none";
-});
-}
-
-/* SEARCH */
-function searchProducts(q){
-q=q.toLowerCase();
-document.querySelectorAll(".product").forEach(p=>{
-let n=p.querySelector("h3").innerText.toLowerCase();
-p.style.display=n.includes(q)?"block":"none";
-});
-}
-
-/* ADD PRODUCT */
-async function addProduct(){
-await window.fb.addDoc(window.fb.collection(window.db,"products"),{
-name:document.getElementById("name").value,
-price:Number(document.getElementById("price").value),
-image:document.getElementById("image").value,
-category:document.getElementById("category").value,
-createdAt:window.fb.serverTimestamp()
-});
-loadProducts();
-}
-
-/* LOAD PRODUCTS */
-async function loadProducts(){
-let box=document.getElementById("product-list");
-box.innerHTML="";
-
-let snap=await window.fb.getDocs(
-window.fb.collection(window.db,"products")
-);
-
-if(snap.empty){
-box.innerHTML="<p>No products available</p>";
-return;
-}
-
-snap.forEach(d=>{
-let p=d.data();
-
-box.innerHTML+=`
-<div class="product ${p.category}">
-<img src="${p.image}">
-<h3>${p.name}</h3>
-<p class="price">UGX ${p.price}</p>
-<button onclick="addToCart('${p.name}',${p.price})">Add</button>
-</div>`;
-});
-}
-
-/* INIT */
-function start(){
-updateCart();
-loadProducts();
-}
-
-window.addEventListener("load",start);
-</script>
 
 </body>
 </html>
