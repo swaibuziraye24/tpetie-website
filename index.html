@@ -2,226 +2,92 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>T-Petie Beauty Center</title>
-<link rel="manifest" href="manifest.json">
-
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #f5f5f5;
-}
-
-/* TOP BAR */
-.topbar {
-    background: #ff9900;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    color: white;
-}
-
-/* SEARCH */
-.search {
-    width: 50%;
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
-}
-
-/* HERO */
-.hero {
-    background: url("beauty.jpg") center/cover;
-    height: 200px;
-    margin: 10px;
-    border-radius: 10px;
-}
-
-/* CATEGORY BUTTONS */
-.categories {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px;
-    background: white;
-}
-
-.categories button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 20px;
-    background: #eee;
-    cursor: pointer;
-}
-
-.categories button.active {
-    background: #ff9900;
-    color: white;
-}
-
-/* PRODUCTS */
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 15px;
-    padding: 10px;
-}
-
-.product {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.product img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-
-.price {
-    color: #ff9900;
-    font-weight: bold;
-}
-
-.product button {
-    background: #ff9900;
-    color: white;
-    border: none;
-    padding: 8px;
-    width: 100%;
-    margin-top: 5px;
-}
-
-/* CART */
-#cart-box {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    background: white;
-    padding: 15px;
-    display: none;
-}
-
-.slider {
-    position: relative;
-}
-
-.slider img {
-    width: 100%;
-    display: none;
-    border-radius: 10px;
-}
-
-.slider img.active {
-    display: block;
-}
-
-body {
-    background: #f1f1f1;
-}
-
-.topbar {
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.product {
-    transition: 0.3s;
-    border: 1px solid #eee;
-}
-
-.product:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.product button {
-    background: #ff6600;
-}
-
-.product button:hover {
-    background: #e65c00;
-}
-
-.price {
-    font-size: 18px;
-}
-
-/* HEADER */
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-/* GRID */
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-}
-
-/* PRODUCT CARD */
-.product {
-    border: 1px solid #eee;
-    transition: 0.3s;
-    background: white;
-}
-
-.product:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
-/* BUTTON */
-.product button {
-    background: #ff6600;
-    font-weight: bold;
-}
-
-/* HERO BANNER */
-.hero {
-    height: 250px;
-    background: url("banner.jpg") center/cover;
-    border-radius: 10px;
-}
-
-/* CATEGORY STYLE */
-.categories button {
-    font-size: 14px;
-}
-
-.product::after {
-    content: "SALE";
-    position: absolute;
-    background: red;
-    color: white;
-    padding: 3px 6px;
-    top: 5px;
-    left: 5px;
-    font-size: 10px;
-}
-
-
-</style>
+<title>T-Petie Beauty</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+<style>
 
-<!-- TOP -->
+    body {
+    margin:0;
+    font-family: Arial;
+    background:#f5f5f5;
+}
+
+.topbar {
+    background:#ff9900;
+    padding:10px;
+    display:flex;
+    justify-content:space-between;
+    color:white;
+}
+
+.hero {
+    height:200px;
+    background:url('banner.jpg') center/cover;
+    margin:10px;
+    border-radius:10px;
+}
+
+.categories {
+    display:flex;
+    overflow:auto;
+    padding:10px;
+    gap:10px;
+    background:white;
+}
+
+.categories button {
+    padding:8px;
+    border:none;
+    border-radius:20px;
+}
+
+.products {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+    gap:10px;
+    padding:10px;
+}
+
+.product {
+    background:white;
+    padding:10px;
+    border-radius:8px;
+    text-align:center;
+}
+
+.product img {
+    width:100%;
+    height:140px;
+    object-fit:cover;
+}
+
+#cart-box {
+    position:fixed;
+    right:0;
+    top:0;
+    width:300px;
+    height:100%;
+    background:white;
+    display:none;
+    padding:10px;
+}
+
+</style>
+
+<!-- TOP BAR -->
 <div class="topbar">
     <h2>T-Petie</h2>
-    <input class="search" placeholder="Search products...">
+    <input type="text" placeholder="Search..." onkeyup="searchProducts(this.value)">
     <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
 </div>
 
 <!-- HERO -->
 <div class="hero"></div>
 
-<!-- CATEGORIES -->
+<!-- CATEGORY -->
 <div class="categories">
     <button onclick="filterProducts('all')" class="active">All</button>
     <button onclick="filterProducts('perfume')">Perfumes</button>
@@ -229,259 +95,121 @@ body {
     <button onclick="filterProducts('bags')">Bags</button>
 </div>
 
-<div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
-    <h3>Add Product (Admin)</h3>
-
-    <input id="p-name" placeholder="Product name"><br><br>
-    <input id="p-price" placeholder="Price"><br><br>
-    <input id="p-image" placeholder="Image file name (e.g bag.jpg)"><br><br>
-
-    <select id="p-category">
-        <option value="perfume">Perfume</option>
-        <option value="cosmetics">Cosmetics</option>
-        <option value="bags">Bags</option>
-    </select><br><br>
-
-    <button onclick="addProduct()">Add Product</button>
-</div>
-
 <!-- PRODUCTS -->
-<div class="products">
+<div class="products" id="products">
 
     <div class="product perfume">
         <img src="perfume.jpg">
         <h3>Luxury Perfume</h3>
-        <p class="price">UGX 80,000</p>
-        <button onclick="addToCart('Luxury Perfume', 80000)">Add</button>
+        <p>UGX 80,000</p>
+        <button onclick="addToCart('Luxury Perfume',80000)">Add</button>
     </div>
 
     <div class="product cosmetics">
         <img src="cosmetics.jpg">
         <h3>Makeup Kit</h3>
-        <p class="price">UGX 120,000</p>
-        <button onclick="addToCart('Makeup Kit', 120000)">Add</button>
-    </div>
-
-    <div class="product bags">
-        <img src="bag.jpg">
-        <h3>Ladies Handbag</h3>
-        <p class="price">UGX 95,000</p>
-        <button onclick="addToCart('Ladies Handbag', 95000)">Add</button>
-    </div>
-
-</div>
-
-<div class="slider">
-    <img src="perfume1.jpg" class="active">
-    <img src="perfume2.jpg">
-    <img src="perfume3.jpg">
-</div>
-
-<div class="products" id="product-list">
-
-    <!-- PERFUMES -->
-    <div class="product perfume">
-        <img src="perfume1.jpg">
-        <h3>Chanel Perfume</h3>
-        <p class="price">UGX 150,000</p>
-        <button onclick="addToCart('Chanel Perfume',150000)">Add</button>
-    </div>
-
-    <div class="product perfume">
-        <img src="perfume2.jpg">
-        <h3>Dior Sauvage</h3>
-        <p class="price">UGX 180,000</p>
-        <button onclick="addToCart('Dior Sauvage',180000)">Add</button>
-    </div>
-
-    <!-- COSMETICS -->
-    <div class="product cosmetics">
-        <img src="cosmetics1.jpg">
-        <h3>Full Makeup Kit</h3>
-        <p class="price">UGX 120,000</p>
-        <button onclick="addToCart('Full Makeup Kit',120000)">Add</button>
-    </div>
-
-    <div class="product cosmetics">
-        <img src="lipstick.jpg">
-        <h3>Matte Lipstick</h3>
-        <p class="price">UGX 25,000</p>
-        <button onclick="addToCart('Matte Lipstick',25000)">Add</button>
-    </div>
-
-    <!-- BAGS -->
-    <div class="product bags">
-        <img src="bag1.jpg">
-        <h3>Luxury Handbag</h3>
-        <p class="price">UGX 95,000</p>
-        <button onclick="addToCart('Luxury Handbag',95000)">Add</button>
-    </div>
-
-    <div class="product bags">
-        <img src="bag2.jpg">
-        <h3>Office Ladies Bag</h3>
-        <p class="price">UGX 85,000</p>
-        <button onclick="addToCart('Office Bag',85000)">Add</button>
+        <p>UGX 120,000</p>
+        <button onclick="addToCart('Makeup Kit',120000)">Add</button>
     </div>
 
 </div>
 
 <!-- CART -->
 <div id="cart-box">
-    <h2>Your Cart</h2>
+    <h2>Cart</h2>
     <div id="cart-items"></div>
     <h3>Total: UGX <span id="cart-total">0</span></h3>
-    <button onclick="checkout()">Checkout</button>
+
+    <button onclick="checkout()">Checkout WhatsApp</button>
+    <button onclick="payNow()">Pay Now</button>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script src="app.js"></script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// expose to window so other scripts can use
-window.auth = auth;
-window.db = db;
-window._fb = { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut };
-</script>
-
-<!-- JS -->
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function addToCart(name, price) {
-    let existing = cart.find(i => i.name === name);
-    if (existing) {
-        existing.qty++;
+// ADD TO CART
+function addToCart(name, price){
+    let item = cart.find(i => i.name === name);
+
+    if(item){
+        item.qty++;
     } else {
         cart.push({name, price, qty:1});
     }
+
     saveCart();
     updateCart();
 }
 
-function saveCart() {
+// SAVE
+function saveCart(){
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-function updateCart() {
+// UPDATE CART
+function updateCart(){
     let items = document.getElementById("cart-items");
-    let count = document.getElementById("cart-count");
     let totalEl = document.getElementById("cart-total");
+    let count = document.getElementById("cart-count");
+
+    if(!items) return;
 
     items.innerHTML = "";
     let total = 0;
 
     cart.forEach((item,i)=>{
-        let itemTotal = item.price * item.qty;
-        total += itemTotal;
+        let t = item.price * item.qty;
+        total += t;
 
         items.innerHTML += `
         <p>
-        ${item.name} x${item.qty} - ${itemTotal}
+        ${item.name} x${item.qty} - UGX ${t}
         <button onclick="changeQty(${i},1)">+</button>
         <button onclick="changeQty(${i},-1)">-</button>
         </p>`;
     });
 
-    count.innerText = cart.length;
     totalEl.innerText = total;
+    count.innerText = cart.length;
 }
 
+// CHANGE QTY
 function changeQty(i,val){
     cart[i].qty += val;
-    if(cart[i].qty<=0) cart.splice(i,1);
+    if(cart[i].qty <= 0) cart.splice(i,1);
+
     saveCart();
     updateCart();
 }
 
+// TOGGLE CART
 function toggleCart(){
     let box = document.getElementById("cart-box");
-    box.style.display = box.style.display==="block"?"none":"block";
+    box.style.display = box.style.display === "block" ? "none" : "block";
 }
 
-function checkout(){
-    let phone="256XXXXXXXXX";
-    let msg="Order:\n";
-    let total=0;
-
-    cart.forEach(item=>{
-        let t=item.price*item.qty;
-        total+=t;
-        msg+=`${item.name} x${item.qty} = ${t}\n`;
-    });
-
-    msg+=`\nTotal: ${total}`;
-
-    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
-}
-
+// FILTER
 function filterProducts(cat){
     document.querySelectorAll(".product").forEach(p=>{
-        p.style.display = (cat==="all" || p.classList.contains(cat))?"block":"none";
+        p.style.display = (cat==="all" || p.classList.contains(cat)) ? "block":"none";
     });
 }
 
-updateCart();
+// SEARCH
+function searchProducts(q){
+    q = q.toLowerCase();
 
-
-function searchProducts(query) {
-    let products = document.querySelectorAll(".product");
-
-    query = query.toLowerCase();
-
-    products.forEach(product => {
-        let name = product.querySelector("h3").innerText.toLowerCase();
-
-        if (name.includes(query)) {
-            product.style.display = "block";
-        } else {
-            product.style.display = "none";
-        }
+    document.querySelectorAll(".product").forEach(p=>{
+        let name = p.querySelector("h3").innerText.toLowerCase();
+        p.style.display = name.includes(q) ? "block":"none";
     });
 }
 
-
-setInterval(() => {
-    document.querySelectorAll(".slider").forEach(slider => {
-        let images = slider.querySelectorAll("img");
-        let index = [...images].findIndex(img => img.classList.contains("active"));
-
-        images[index].classList.remove("active");
-        let next = (index + 1) % images.length;
-        images[next].classList.add("active");
-    });
-}, 3000);
-
-
-function openPopup(name, price){
-    document.getElementById("popup").style.display="flex";
-    document.getElementById("popup-name").innerText=name;
-    document.getElementById("popup-price").innerText="UGX "+price;
-}
-
-
-function closePopup(){
-    document.getElementById("popup").style.display="none";
-}
-
+// WHATSAPP CHECKOUT
 function checkout(){
-    let phone="2567XXXXXXXX"; // client number
+    let phone="2567XXXXXXXX"; // PUT REAL NUMBER
     let msg="🛍 T-Petie Beauty Order:\n";
 
     let total=0;
@@ -493,248 +221,29 @@ function checkout(){
     });
 
     msg+=`\nTotal: UGX ${total}`;
-    msg+=`\nPayment: MTN/Airtel Mobile Money`;
 
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
 }
 
+// SLIDER AUTO
+setInterval(()=>{
+    let sliders = document.querySelectorAll(".slider");
 
-function addProduct(){
-    let name = document.getElementById("p-name").value;
-    let price = document.getElementById("p-price").value;
-    let image = document.getElementById("p-image").value;
-    let category = document.getElementById("p-category").value;
+    sliders.forEach(slider=>{
+        let imgs = slider.querySelectorAll("img");
+        if(imgs.length === 0) return;
 
-    let productHTML = `
-    <div class="product ${category}">
-        <img src="${image}">
-        <h3>${name}</h3>
-        <p class="price">UGX ${price}</p>
-        <button onclick="addToCart('${name}', ${price})">Add</button>
-    </div>
-    `;
+        let index = [...imgs].findIndex(img=>img.classList.contains("active"));
 
-    document.getElementById("product-list").innerHTML += productHTML;
-}
-
-
-function getCartTotal(){
-    let total = 0;
-    cart.forEach(item=>{
-        total += item.price * item.qty;
+        imgs[index].classList.remove("active");
+        imgs[(index+1)%imgs.length].classList.add("active");
     });
-    return total;
-}
 
-function payNow(){
-    let total = getCartTotal();
+},3000);
 
-    if(total === 0){
-        alert("Cart is empty");
-        return;
-    }
-
-    FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-XXXXXXXXX",
-        tx_ref: "tpetie_" + Date.now(),
-        amount: total,
-        currency: "UGX",
-        payment_options: "mobilemoneyuganda",
-        customer: {
-            email: "customer@email.com",
-            name: "Customer"
-        },
-        callback: function(response){
-            alert("Payment successful!");
-        },
-        customizations: {
-            title: "T-Petie Beauty",
-            description: "Order Payment"
-        }
-    });
-}
-
-
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-
-function addProduct(){
-    let name = document.getElementById("p-name").value;
-    let price = document.getElementById("p-price").value;
-    let image = document.getElementById("p-image").value;
-    let category = document.getElementById("p-category").value;
-
-    db.collection("products").add({
-        name,
-        price,
-        image,
-        category
-    }).then(()=>{
-        alert("Product added!");
-        loadProducts();
-    });
-}
-
-
-function loadProducts(){
-    let container = document.getElementById("product-list");
-    container.innerHTML = "";
-
-    db.collection("products").get().then(snapshot=>{
-        snapshot.forEach(doc=>{
-            let p = doc.data();
-
-            container.innerHTML += `
-            <div class="product ${p.category}">
-                <img src="${p.image}">
-                <h3>${p.name}</h3>
-                <p class="price">UGX ${p.price}</p>
-                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-            </div>
-            `;
-        });
-    });
-}
-
-loadProducts();
-
-
-function register(){
-  const { createUserWithEmailAndPassword } = window._fb;
-  createUserWithEmailAndPassword(window.auth, email.value, password.value)
-    .then(()=> alert("Registered"))
-    .catch(e=> alert(e.message));
-}
-
-function login(){
-  const { signInWithEmailAndPassword } = window._fb;
-  signInWithEmailAndPassword(window.auth, email.value, password.value)
-    .then(()=> alert("Logged in"))
-    .catch(e=> alert(e.message));
-}
-
-function logout(){
-  const { signOut } = window._fb;
-  signOut(window.auth);
-}
-
-window._fb.onAuthStateChanged(window.auth, user=>{
-  document.getElementById("user-status").innerText = user ? "Logged in: " + user.email : "Not logged in";
-});
-
-
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-async function saveOrder(user, cart){
-  if(!user){ alert("Login first"); return; }
-
-  await addDoc(collection(window.db, "orders"), {
-    userId: user.uid,
-    items: cart,
-    total: getCartTotal(),
-    status: "Pending",
-    createdAt: serverTimestamp()
-  });
-
-  alert("Order placed!");
-}
-
-const user = window.auth.currentUser;
-saveOrder(user, cart);
-
-<script type="module">
-import { collection, query, where, getDocs } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-async function loadOrders(){
-  const user = window.auth.currentUser;
-  if(!user) return;
-
-  const q = query(collection(window.db, "orders"), where("userId","==",user.uid));
-  const snap = await getDocs(q);
-
-  let box = document.getElementById("orders");
-  box.innerHTML = "";
-
-  snap.forEach(doc=>{
-    const o = doc.data();
-    box.innerHTML += `
-      <div style="background:#fff;padding:10px;margin-bottom:10px;">
-        <strong>Status:</strong> ${o.status}<br>
-        <strong>Total:</strong> UGX ${o.total}
-      </div>
-    `;
-  });
-}
-
-// reload when user logs in
-window._fb.onAuthStateChanged(window.auth, user=>{
-  if(user) loadOrders();
-});
-
-
+// INIT
+updateCart();
 </script>
-
-<button onclick="payNow()">Pay Now</button>
-
-<button onclick="openPopup('Luxury Perfume',80000)">View</button>
-
-<input class="search" placeholder="Search products..." onkeyup="searchProducts(this.value)">
-
-<div id="popup" style="
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.6);
-display:none;
-justify-content:center;
-align-items:center;
-">
-
-<div style="background:white;padding:20px;border-radius:10px;width:300px;">
-    <h3 id="popup-name"></h3>
-    <p id="popup-price"></p>
-    <button onclick="closePopup()">Close</button>
-</div>
-
-</div>
-
-<div id="auth-box" style="padding:15px;background:#fff;margin:10px;border-radius:10px;">
-  <h3>Account</h3>
-  <input id="email" placeholder="Email"><br><br>
-  <input id="password" type="password" placeholder="Password"><br><br>
-  <button onclick="register()">Register</button>
-  <button onclick="login()">Login</button>
-  <button onclick="logout()">Logout</button>
-  <p id="user-status"></p>
-</div>
-
-<div style="padding:10px;">
-  <h3>My Orders</h3>
-  <div id="orders"></div>
-</div>
-{
-  "name": "T-Petie Beauty",
-  "short_name": "T-Petie",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ff9900",
-  "icons": [
-    {
-      "src": "logo.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
-}
 
 </body>
 </html>
