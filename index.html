@@ -779,25 +779,41 @@ async function addProduct(){
 }
 
 async function loadProducts(){
+
     let container = document.getElementById("product-list");
-    container.innerHTML = "";
 
-    let snap = await window.fb.getDocs(
-        window.fb.collection(window.db,"products")
-    );
+    // KEEP existing HTML products first
+    let htmlBackup = container.innerHTML;
 
-    snap.forEach(doc=>{
-        let p = doc.data();
+    try{
+        let snap = await window.fb.getDocs(
+            window.fb.collection(window.db,"products")
+        );
 
-        container.innerHTML += `
-        <div class="product ${p.category}">
-            <img src="${p.image}">
-            <h3>${p.name}</h3>
-            <p class="price">UGX ${p.price}</p>
-            <button onclick="addToCart('${p.name}',${p.price})">Add</button>
-        </div>
-        `;
-    });
+        let firebaseHTML = "";
+
+        snap.forEach(doc=>{
+            let p = doc.data();
+
+            firebaseHTML += `
+            <div class="product ${p.category}">
+                <img src="${p.image}">
+                <h3>${p.name}</h3>
+                <p class="price">UGX ${p.price}</p>
+                <button onclick="addToCart('${p.name}',${p.price})">Add</button>
+            </div>
+            `;
+        });
+
+        // combine BOTH
+        container.innerHTML = htmlBackup + firebaseHTML;
+
+    } catch(err){
+        console.log("Firebase load error:", err);
+
+        // fallback: keep static products
+        container.innerHTML = htmlBackup;
+    }
 }
 
 async function checkout(){
@@ -924,6 +940,10 @@ async function updateOrderStatus(id, status){
 updateCart();
 loadProducts();
 loadAllOrders();
+
+window.onload = function(){
+    loadProducts();
+};
 </script>
 
 
