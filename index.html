@@ -800,26 +800,130 @@ async function loadProducts(){
     });
 }
 
-function checkout(){
-let phone="2567XXXXXXXX";
-let msg="Order:\n";
-let total=0;
+async function checkout(){
 
-cart.forEach(i=>{
-total+=i.price*i.qty;
-msg+=`${i.name} x${i.qty} = ${i.price*i.qty}\n`;
+    let user = window.auth.currentUser;
+
+    if(!user){
+        alert("Please login first before ordering");
+        return;
+    }
+
+    let total = 0;
+    let items = [];
+
+    cart.forEach(item=>{
+        let t = item.price * item.qty;
+        total += t;
+
+        items.push({
+            name: item.name,
+            qty: item.qty,
+            price: item.price,
+            total: t
+        });
+    });
+
+   window.fb.onAuthStateChanged(window.auth, user=>{
+    let status = document.getElementById("user-status");
+
+    if(user){
+        status.innerText = "Logged in: " + user.email;
+        loadUserOrders();
+    } else {
+        status.innerText = "Not logged in";
+    }
 });
 
-msg+=`\nTOTAL: ${total}`;
-window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
+    await window.fb.addDoc(
+        window.fb.collection(window.db,"orders"),
+        {
+            userId: user.uid,
+            items: items,
+            total: total,
+            status: "Pending",
+            createdAt: window.fb.serverTimestamp()
+        }
+    );
+
+    alert("Order placed successfully!");
+    cart = [];
+    saveCart();
+    updateCart();
+}
+
+async function loadUserOrders(){
+
+    let user = window.auth.currentUser;
+    if(!user) return;
+
+    let box = document.getElementById("orders");
+    box.innerHTML = "";
+
+    let q = window.fb.query(
+        window.fb.collection(window.db,"orders"),
+        window.fb.where("userId","==",user.uid)
+    );
+
+    let snap = await window.fb.getDocs(q);
+
+    snap.forEach(doc=>{
+        let o = doc.data();
+
+        box.innerHTML += `
+        <div style="background:#fff;padding:10px;margin:10px;border-radius:10px;">
+            <p><b>Status:</b> ${o.status}</p>
+            <p><b>Total:</b> UGX ${o.total}</p>
+        </div>
+        `;
+    });
 }
 
 function payNow(){
 alert("Flutterwave integration stays same here");
 }
 
+async function loadAllOrders(){
+
+    let container = document.getElementById("admin-orders");
+    container.innerHTML = "";
+
+    let snap = await window.fb.getDocs(
+        window.fb.collection(window.db,"orders")
+    );
+
+    snap.forEach(docSnap=>{
+        let o = docSnap.data();
+
+        container.innerHTML += `
+        <div style="background:#f9f9f9;padding:10px;margin:10px;border-radius:10px;">
+            <p><b>Total:</b> UGX ${o.total}</p>
+            <p><b>Status:</b> ${o.status}</p>
+
+            <select onchange="updateOrderStatus('${docSnap.id}', this.value)">
+                <option>Pending</option>
+                <option>Shipped</option>
+                <option>Delivered</option>
+            </select>
+        </div>
+        `;
+    });
+}
+
+async function updateOrderStatus(id, status){
+
+    await window.fb.updateDoc(
+        window.fb.doc(window.db,"orders",id),
+        { status: status }
+    );
+
+    alert("Order updated!");
+    loadAllOrders();
+}
+
 updateCart();
 loadProducts();
+loadAllOrders();
 </script>
 
 
