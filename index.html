@@ -7,180 +7,69 @@
 <link rel="manifest" href="manifest.json">
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #f5f5f5;
+body { margin:0; font-family:Arial; background:#f5f5f5; }
+
+.topbar{
+background:#ff9900;color:white;
+display:flex;justify-content:space-between;
+padding:10px;position:sticky;top:0;z-index:1000;
 }
 
-/* TOP BAR */
-.topbar {
-    background: #ff9900;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.search{width:50%;padding:8px;border:none;border-radius:5px;}
+
+.hero{height:200px;background:url("banner.jpg") center/cover;margin:10px;border-radius:10px;}
+
+.categories{display:flex;gap:10px;overflow-x:auto;padding:10px;background:#fff;}
+.categories button{padding:8px;border:none;border-radius:20px;}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:10px;padding:10px;
 }
 
-.search {
-    width: 50%;
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
+.product{
+background:white;padding:10px;border-radius:8px;text-align:center;
 }
 
-/* HERO */
-.hero {
-    background: url("banner.jpg") center/cover;
-    height: 250px;
-    margin: 10px;
-    border-radius: 10px;
-}
+.product img{width:100%;height:140px;object-fit:cover;}
 
-/* CATEGORIES */
-.categories {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px;
-    background: white;
-}
+.price{color:orange;font-weight:bold;}
 
-.categories button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 20px;
-    background: #eee;
-    cursor: pointer;
-    font-size: 14px;
-}
+button{background:#ff6600;color:white;border:none;padding:8px;width:100%;margin-top:5px;}
 
-.categories button.active {
-    background: #ff9900;
-    color: white;
-}
-
-/* PRODUCTS */
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-    gap: 15px;
-    padding: 10px;
-}
-
-.product {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    border: 1px solid #eee;
-    transition: 0.3s;
-    position: relative;
-}
-
-.product:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
-.product img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-
-.price {
-    color: #ff9900;
-    font-weight: bold;
-    font-size: 18px;
-}
-
-.product button {
-    background: #ff6600;
-    color: white;
-    border: none;
-    padding: 8px;
-    width: 100%;
-    margin-top: 5px;
-    font-weight: bold;
-}
-
-/* CART */
-#cart-box {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    background: white;
-    padding: 15px;
-    display: none;
-    overflow-y: auto;
-}
-
-/* SLIDER */
-.slider img {
-    width: 100%;
-    display: none;
-    border-radius: 10px;
-}
-
-.slider img.active {
-    display: block;
-}
-
-/* POPUP */
-#popup {
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.6);
-display:none;
-justify-content:center;
-align-items:center;
+#cart-box{
+position:fixed;right:0;top:0;width:300px;height:100%;
+background:white;display:none;padding:10px;overflow:auto;
 }
 </style>
 </head>
 
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
-    <h2>T-Petie</h2>
-
-    <input class="search" placeholder="Search products..."
-    onkeyup="searchProducts(this.value)">
-
-    <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
+<h3>T-Petie</h3>
+<input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
+<span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
 </div>
 
-<!-- HERO -->
 <div class="hero"></div>
-<link rel="icon" href="logo.png">
-<meta name="theme-color" content="#ff9900">
 
-
-<!-- CATEGORIES -->
 <div class="categories">
-    <button onclick="filterProducts('all')" class="active">All</button>
-    <button onclick="filterProducts('perfume')">Perfumes</button>
-    <button onclick="filterProducts('cosmetics')">Cosmetics</button>
-    <button onclick="filterProducts('bags')">Bags</button>
+<button onclick="filter('all')">All</button>
+<button onclick="filter('perfume')">Perfume</button>
+<button onclick="filter('cosmetics')">Cosmetics</button>
+<button onclick="filter('bags')">Bags</button>
 </div>
 
-<!-- ADMIN ADD PRODUCT -->
-<div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
-<h3>Add Product (Admin)</h3>
+<!-- ADMIN -->
+<div style="background:#fff;margin:10px;padding:10px;">
+<h3>Admin Add Product</h3>
+<input id="name" placeholder="Name"><br><br>
+<input id="price" placeholder="Price"><br><br>
+<input id="image" placeholder="Image URL"><br><br>
 
-<input id="p-name" placeholder="Product name"><br><br>
-<input id="p-price" placeholder="Price"><br><br>
-<input id="p-image" placeholder="Image file"><br><br>
-
-<select id="p-category">
+<select id="category">
 <option value="perfume">Perfume</option>
 <option value="cosmetics">Cosmetics</option>
 <option value="bags">Bags</option>
@@ -189,879 +78,147 @@ align-items:center;
 <button onclick="addProduct()">Add Product</button>
 </div>
 
-<!-- PRODUCTS -->
-<div class="products" id="product-list">
-
-    <!-- PERFUMES -->
-<div class="product perfume">
-    <img src="perfume3.jpg">
-    <h3>Gucci Bloom</h3>
-    <p class="price">UGX 160,000</p>
-    <button onclick="addToCart('Gucci Bloom',160000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume4.jpg">
-    <h3>Versace Bright Crystal</h3>
-    <p class="price">UGX 140,000</p>
-    <button onclick="addToCart('Versace Crystal',140000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume5.jpg">
-    <h3>Armani Code</h3>
-    <p class="price">UGX 170,000</p>
-    <button onclick="addToCart('Armani Code',170000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume6.jpg">
-    <h3>YSL Black Opium</h3>
-    <p class="price">UGX 190,000</p>
-    <button onclick="addToCart('Black Opium',190000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume7.jpg">
-    <h3>Dolce & Gabbana Light Blue</h3>
-    <p class="price">UGX 155,000</p>
-    <button onclick="addToCart('D&G Light Blue',155000)">Add</button>
-</div>
-
-<!-- COSMETICS -->
-<div class="product cosmetics">
-    <img src="cosmetics2.jpg">
-    <h3>Beauty Foundation Set</h3>
-    <p class="price">UGX 90,000</p>
-    <button onclick="addToCart('Foundation Set',90000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="cosmetics3.jpg">
-    <h3>Face Powder Kit</h3>
-    <p class="price">UGX 60,000</p>
-    <button onclick="addToCart('Face Powder',60000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="lipstick2.jpg">
-    <h3>Red Lipstick Pro</h3>
-    <p class="price">UGX 20,000</p>
-    <button onclick="addToCart('Red Lipstick',20000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="eyeliner.jpg">
-    <h3>Waterproof Eyeliner</h3>
-    <p class="price">UGX 15,000</p>
-    <button onclick="addToCart('Eyeliner',15000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="makeup-brush.jpg">
-    <h3>Makeup Brush Set</h3>
-    <p class="price">UGX 45,000</p>
-    <button onclick="addToCart('Brush Set',45000)">Add</button>
-</div>
-
-<!-- BAGS -->
-<div class="product bags">
-    <img src="bag3.jpg">
-    <h3>Luxury Office Bag</h3>
-    <p class="price">UGX 110,000</p>
-    <button onclick="addToCart('Office Bag',110000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag4.jpg">
-    <h3>Mini Fashion Bag</h3>
-    <p class="price">UGX 70,000</p>
-    <button onclick="addToCart('Mini Bag',70000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag5.jpg">
-    <h3>Travel Backpack</h3>
-    <p class="price">UGX 130,000</p>
-    <button onclick="addToCart('Backpack',130000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag6.jpg">
-    <h3>Designer Shoulder Bag</h3>
-    <p class="price">UGX 125,000</p>
-    <button onclick="addToCart('Shoulder Bag',125000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag7.jpg">
-    <h3>Elegant Hand Purse</h3>
-    <p class="price">UGX 80,000</p>
-    <button onclick="addToCart('Hand Purse',80000)">Add</button>
-</div>
-
-<!-- EXTRA BEAUTY ITEMS -->
-<div class="product cosmetics">
-    <img src="skincare.jpg">
-    <h3>Skincare Kit</h3>
-    <p class="price">UGX 95,000</p>
-    <button onclick="addToCart('Skincare Kit',95000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="perfume-set.jpg">
-    <h3>Mini Perfume Set</h3>
-    <p class="price">UGX 85,000</p>
-    <button onclick="addToCart('Mini Perfume Set',85000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume8.jpg">
-    <h3>Tom Ford Black Orchid</h3>
-    <p class="price">UGX 210,000</p>
-    <button onclick="addToCart('Tom Ford',210000)">Add</button>
-</div>
-    <!-- PERFUMES -->
-<div class="product perfume">
-    <img src="perfume3.jpg">
-    <h3>Gucci Bloom</h3>
-    <p class="price">UGX 160,000</p>
-    <button onclick="addToCart('Gucci Bloom',160000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume4.jpg">
-    <h3>Versace Bright Crystal</h3>
-    <p class="price">UGX 140,000</p>
-    <button onclick="addToCart('Versace Crystal',140000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume5.jpg">
-    <h3>Armani Code</h3>
-    <p class="price">UGX 170,000</p>
-    <button onclick="addToCart('Armani Code',170000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume6.jpg">
-    <h3>YSL Black Opium</h3>
-    <p class="price">UGX 190,000</p>
-    <button onclick="addToCart('Black Opium',190000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume7.jpg">
-    <h3>Dolce & Gabbana Light Blue</h3>
-    <p class="price">UGX 155,000</p>
-    <button onclick="addToCart('D&G Light Blue',155000)">Add</button>
-</div>
-
-<!-- COSMETICS -->
-<div class="product cosmetics">
-    <img src="cosmetics2.jpg">
-    <h3>Beauty Foundation Set</h3>
-    <p class="price">UGX 90,000</p>
-    <button onclick="addToCart('Foundation Set',90000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="cosmetics3.jpg">
-    <h3>Face Powder Kit</h3>
-    <p class="price">UGX 60,000</p>
-    <button onclick="addToCart('Face Powder',60000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="lipstick2.jpg">
-    <h3>Red Lipstick Pro</h3>
-    <p class="price">UGX 20,000</p>
-    <button onclick="addToCart('Red Lipstick',20000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="eyeliner.jpg">
-    <h3>Waterproof Eyeliner</h3>
-    <p class="price">UGX 15,000</p>
-    <button onclick="addToCart('Eyeliner',15000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="makeup-brush.jpg">
-    <h3>Makeup Brush Set</h3>
-    <p class="price">UGX 45,000</p>
-    <button onclick="addToCart('Brush Set',45000)">Add</button>
-</div>
-
-<!-- BAGS -->
-<div class="product bags">
-    <img src="bag3.jpg">
-    <h3>Luxury Office Bag</h3>
-    <p class="price">UGX 110,000</p>
-    <button onclick="addToCart('Office Bag',110000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag4.jpg">
-    <h3>Mini Fashion Bag</h3>
-    <p class="price">UGX 70,000</p>
-    <button onclick="addToCart('Mini Bag',70000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag5.jpg">
-    <h3>Travel Backpack</h3>
-    <p class="price">UGX 130,000</p>
-    <button onclick="addToCart('Backpack',130000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag6.jpg">
-    <h3>Designer Shoulder Bag</h3>
-    <p class="price">UGX 125,000</p>
-    <button onclick="addToCart('Shoulder Bag',125000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag7.jpg">
-    <h3>Elegant Hand Purse</h3>
-    <p class="price">UGX 80,000</p>
-    <button onclick="addToCart('Hand Purse',80000)">Add</button>
-</div>
-
-<!-- EXTRA BEAUTY ITEMS -->
-<div class="product cosmetics">
-    <img src="skincare.jpg">
-    <h3>Skincare Kit</h3>
-    <p class="price">UGX 95,000</p>
-    <button onclick="addToCart('Skincare Kit',95000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="perfume-set.jpg">
-    <h3>Mini Perfume Set</h3>
-    <p class="price">UGX 85,000</p>
-    <button onclick="addToCart('Mini Perfume Set',85000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume8.jpg">
-    <h3>Tom Ford Black Orchid</h3>
-    <p class="price">UGX 210,000</p>
-    <button onclick="addToCart('Tom Ford',210000)">Add</button>
-</div><!-- PERFUMES -->
-<div class="product perfume">
-    <img src="perfume3.jpg">
-    <h3>Gucci Bloom</h3>
-    <p class="price">UGX 160,000</p>
-    <button onclick="addToCart('Gucci Bloom',160000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume4.jpg">
-    <h3>Versace Bright Crystal</h3>
-    <p class="price">UGX 140,000</p>
-    <button onclick="addToCart('Versace Crystal',140000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume5.jpg">
-    <h3>Armani Code</h3>
-    <p class="price">UGX 170,000</p>
-    <button onclick="addToCart('Armani Code',170000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume6.jpg">
-    <h3>YSL Black Opium</h3>
-    <p class="price">UGX 190,000</p>
-    <button onclick="addToCart('Black Opium',190000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume7.jpg">
-    <h3>Dolce & Gabbana Light Blue</h3>
-    <p class="price">UGX 155,000</p>
-    <button onclick="addToCart('D&G Light Blue',155000)">Add</button>
-</div>
-
-<!-- COSMETICS -->
-<div class="product cosmetics">
-    <img src="cosmetics2.jpg">
-    <h3>Beauty Foundation Set</h3>
-    <p class="price">UGX 90,000</p>
-    <button onclick="addToCart('Foundation Set',90000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="cosmetics3.jpg">
-    <h3>Face Powder Kit</h3>
-    <p class="price">UGX 60,000</p>
-    <button onclick="addToCart('Face Powder',60000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="lipstick2.jpg">
-    <h3>Red Lipstick Pro</h3>
-    <p class="price">UGX 20,000</p>
-    <button onclick="addToCart('Red Lipstick',20000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="eyeliner.jpg">
-    <h3>Waterproof Eyeliner</h3>
-    <p class="price">UGX 15,000</p>
-    <button onclick="addToCart('Eyeliner',15000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="makeup-brush.jpg">
-    <h3>Makeup Brush Set</h3>
-    <p class="price">UGX 45,000</p>
-    <button onclick="addToCart('Brush Set',45000)">Add</button>
-</div>
-
-<!-- BAGS -->
-<div class="product bags">
-    <img src="bag3.jpg">
-    <h3>Luxury Office Bag</h3>
-    <p class="price">UGX 110,000</p>
-    <button onclick="addToCart('Office Bag',110000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag4.jpg">
-    <h3>Mini Fashion Bag</h3>
-    <p class="price">UGX 70,000</p>
-    <button onclick="addToCart('Mini Bag',70000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag5.jpg">
-    <h3>Travel Backpack</h3>
-    <p class="price">UGX 130,000</p>
-    <button onclick="addToCart('Backpack',130000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag6.jpg">
-    <h3>Designer Shoulder Bag</h3>
-    <p class="price">UGX 125,000</p>
-    <button onclick="addToCart('Shoulder Bag',125000)">Add</button>
-</div>
-
-<div class="product bags">
-    <img src="bag7.jpg">
-    <h3>Elegant Hand Purse</h3>
-    <p class="price">UGX 80,000</p>
-    <button onclick="addToCart('Hand Purse',80000)">Add</button>
-</div>
-
-<!-- EXTRA BEAUTY ITEMS -->
-<div class="product cosmetics">
-    <img src="skincare.jpg">
-    <h3>Skincare Kit</h3>
-    <p class="price">UGX 95,000</p>
-    <button onclick="addToCart('Skincare Kit',95000)">Add</button>
-</div>
-
-<div class="product cosmetics">
-    <img src="perfume-set.jpg">
-    <h3>Mini Perfume Set</h3>
-    <p class="price">UGX 85,000</p>
-    <button onclick="addToCart('Mini Perfume Set',85000)">Add</button>
-</div>
-
-<div class="product perfume">
-    <img src="perfume8.jpg">
-    <h3>Tom Ford Black Orchid</h3>
-    <p class="price">UGX 210,000</p>
-    <button onclick="addToCart('Tom Ford',210000)">Add</button>
-</div>
-
-    <div class="product perfume">
-        <img src="perfume1.jpg">
-        <h3>Chanel Perfume</h3>
-        <p class="price">UGX 150,000</p>
-        <button onclick="addToCart('Chanel Perfume',150000)">Add</button>
-    </div>
-
-    <div class="product cosmetics">
-        <img src="cosmetics1.jpg">
-        <h3>Full Makeup Kit</h3>
-        <p class="price">UGX 120,000</p>
-        <button onclick="addToCart('Full Makeup Kit',120000)">Add</button>
-    </div>
-
-    <div class="product bags">
-        <img src="bag1.jpg">
-        <h3>Luxury Handbag</h3>
-        <p class="price">UGX 95,000</p>
-        <button onclick="addToCart('Luxury Handbag',95000)">Add</button>
-    </div>
-
-</div>
-
-<!-- SLIDER -->
-<div class="slider">
-    <img src="perfume1.jpg" class="active">
-    <img src="perfume2.jpg">
-    <img src="perfume3.jpg">
-</div>
+<div class="products" id="product-list"></div>
 
 <!-- CART -->
 <div id="cart-box">
-    <h2>Your Cart</h2>
-    <div id="cart-items"></div>
-    <h3>Total: UGX <span id="cart-total">0</span></h3>
-    <button onclick="checkout()">Checkout</button>
-    <button onclick="payNow()">Pay Now</button>
+<h3>Cart</h3>
+<div id="cart-items"></div>
+<h3>Total: UGX <span id="total">0</span></h3>
 </div>
 
-<!-- POPUP -->
-<div id="popup">
-<div style="background:white;padding:20px;border-radius:10px;width:300px;">
-    <h3 id="popup-name"></h3>
-    <p id="popup-price"></p>
-    <button onclick="closePopup()">Close</button>
-</div>
-</div>
-
-<!-- MAP -->
-<div id="map" style="height:300px;margin:10px;"></div>
-
-<!-- AUTH -->
-<div id="auth-box" style="padding:15px;background:#fff;margin:10px;border-radius:10px;">
-<h3>Account</h3>
-
-<input id="email" placeholder="Email"><br><br>
-<input id="password" type="password" placeholder="Password"><br><br>
-
-<button onclick="register()">Register</button>
-<button onclick="login()">Login</button>
-<button onclick="logout()">Logout</button>
-
-<p id="user-status"></p>
-</div>
-
-<!-- ORDERS -->
-<div style="padding:10px;">
-<h3>My Orders</h3>
-<div id="orders"></div>
-</div>
-
-<!-- ADMIN ORDERS -->
-<div style="padding:15px;background:#fff;margin:10px;border-radius:10px;">
-  <h2>🔥 Admin Panel</h2>
-
-  <h3>Add Product</h3>
-
-  <input id="admin-name" placeholder="Product name"><br><br>
-  <input id="admin-price" placeholder="Price"><br><br>
-  <input id="admin-image" placeholder="Image URL"><br><br>
-
-  <select id="admin-category">
-    <option value="perfume">Perfume</option>
-    <option value="cosmetics">Cosmetics</option>
-    <option value="bags">Bags</option>
-  </select><br><br>
-
-  <button onclick="adminAddProduct()">➕ Add Product</button>
-
-  <hr>
-
-  <h3>All Products</h3>
-  <div id="admin-products"></div>
-</div>
-
-<!-- FIREBASE (MODERN ONLY ONCE) -->
+<!-- FIREBASE -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc,
+query,
+where,
+updateDoc,
+serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_PROJECT.firebaseapp.com",
+projectId:"YOUR_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-window.db = getFirestore(app);
-
-window.fb = {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
-};
+window.db=db;
+window.fb={collection,addDoc,getDocs,deleteDoc,doc,query,where,updateDoc,serverTimestamp};
 </script>
 
-<!-- MAIN JS -->
+<!-- APP -->
 <script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart=[];
 
-function addToCart(name, price){
-let item = cart.find(i=>i.name===name);
-if(item) item.qty++;
-else cart.push({name,price,qty:1});
-saveCart(); updateCart();
-}
-
-function saveCart(){
-localStorage.setItem("cart",JSON.stringify(cart));
+/* CART */
+function addToCart(n,p){
+let i=cart.find(x=>x.name===n);
+i?i.qty++:cart.push({name:n,price:p,qty:1});
+updateCart();
 }
 
 function updateCart(){
-let items=document.getElementById("cart-items");
+let box=document.getElementById("cart-items");
 let total=0;
-items.innerHTML="";
+box.innerHTML="";
 
-cart.forEach((i,index)=>{
-let t=i.price*i.qty;
-total+=t;
-
-items.innerHTML+=`
-<p>${i.name} x${i.qty} = ${t}
-<button onclick="changeQty(${index},1)">+</button>
-<button onclick="changeQty(${index},-1)">-</button>
+cart.forEach((i,idx)=>{
+total+=i.price*i.qty;
+box.innerHTML+=`
+<p>${i.name} x${i.qty} = ${i.price*i.qty}
+<button onclick="change(${idx},1)">+</button>
+<button onclick="change(${idx},-1)">-</button>
 </p>`;
 });
 
-document.getElementById("cart-total").innerText=total;
+document.getElementById("total").innerText=total;
 document.getElementById("cart-count").innerText=cart.length;
 }
 
-function changeQty(i,v){
+function change(i,v){
 cart[i].qty+=v;
-if(cart[i].qty<=0) cart.splice(i,1);
-saveCart(); updateCart();
+if(cart[i].qty<=0)cart.splice(i,1);
+updateCart();
 }
 
 function toggleCart(){
-let box=document.getElementById("cart-box");
-box.style.display=box.style.display==="block"?"none":"block";
+let b=document.getElementById("cart-box");
+b.style.display=b.style.display==="block"?"none":"block";
 }
 
-function filterProducts(cat){
+/* FILTER */
+function filter(c){
 document.querySelectorAll(".product").forEach(p=>{
-p.style.display=(cat==="all"||p.classList.contains(cat))?"block":"none";
+p.style.display=(c==="all"||p.classList.contains(c))?"block":"none";
 });
 }
 
+/* SEARCH */
 function searchProducts(q){
 q=q.toLowerCase();
 document.querySelectorAll(".product").forEach(p=>{
-let name=p.querySelector("h3").innerText.toLowerCase();
-p.style.display=name.includes(q)?"block":"none";
+let n=p.querySelector("h3").innerText.toLowerCase();
+p.style.display=n.includes(q)?"block":"none";
 });
 }
 
-setInterval(()=>{
-let imgs=document.querySelectorAll(".slider img");
-let i=[...imgs].findIndex(x=>x.classList.contains("active"));
-imgs[i].classList.remove("active");
-imgs[(i+1)%imgs.length].classList.add("active");
-},3000);
-
+/* ADD PRODUCT */
 async function addProduct(){
-    let name = document.getElementById("p-name").value;
-    let price = document.getElementById("p-price").value;
-    let image = document.getElementById("p-image").value;
-    let category = document.getElementById("p-category").value;
-
-    await window.fb.addDoc(window.fb.collection(window.db,"products"),{
-        name,
-        price: Number(price),
-        image,
-        category,
-        createdAt: window.fb.serverTimestamp()
-    });
-
-    alert("Product saved to database!");
-    loadProducts();
+await window.fb.addDoc(window.fb.collection(window.db,"products"),{
+name:document.getElementById("name").value,
+price:Number(document.getElementById("price").value),
+image:document.getElementById("image").value,
+category:document.getElementById("category").value,
+createdAt:window.fb.serverTimestamp()
+});
+loadProducts();
 }
 
+/* LOAD PRODUCTS */
 async function loadProducts(){
+let box=document.getElementById("product-list");
+box.innerHTML="";
 
-    const container = document.getElementById("product-list");
+let snap=await window.fb.getDocs(
+window.fb.collection(window.db,"products")
+);
 
-    try {
-
-        container.innerHTML = "";
-
-        const snap = await window.fb.getDocs(
-            window.fb.collection(window.db, "products")
-        );
-
-        snap.forEach(docSnap => {
-
-            const p = docSnap.data();
-
-            if (!p.name || !p.price) return; // safety check
-
-            container.innerHTML += `
-            <div class="product ${p.category}">
-                <img src="${p.image}">
-                <h3>${p.name}</h3>
-                <p class="price">UGX ${Number(p.price).toLocaleString()}</p>
-                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-            </div>
-            `;
-        });
-
-        // if empty
-        if (snap.empty) {
-            container.innerHTML = "<p>No products available</p>";
-        }
-
-    } catch (err) {
-        console.error("Load error:", err);
-        container.innerHTML = "<p style='color:red'>Failed to load products</p>";
-    }
+if(snap.empty){
+box.innerHTML="<p>No products available</p>";
+return;
 }
 
-async function adminAddProduct(){
+snap.forEach(d=>{
+let p=d.data();
 
-    const name = document.getElementById("admin-name").value;
-    const price = document.getElementById("admin-price").value;
-    const image = document.getElementById("admin-image").value;
-    const category = document.getElementById("admin-category").value;
-
-    if(!name || !price || !image){
-        alert("Please fill all fields");
-        return;
-    }
-
-    try {
-        await window.fb.addDoc(
-            window.fb.collection(window.db, "products"),
-            {
-                name: name,
-                price: Number(price),
-                image: image,
-                category: category
-            }
-        );
-
-        alert("Product added successfully!");
-
-        // refresh both admin + store
-        loadProducts();
-        loadAdminProducts();
-
-    } catch (err) {
-        console.error(err);
-        alert("Failed to add product. Check Firebase connection.");
-    }
+box.innerHTML+=`
+<div class="product ${p.category}">
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<p class="price">UGX ${p.price}</p>
+<button onclick="addToCart('${p.name}',${p.price})">Add</button>
+</div>`;
+});
 }
 
-async function loadAdminProducts(){
-
-    let box = document.getElementById("admin-products");
-    box.innerHTML = "";
-
-    const snap = await window.fb.getDocs(
-        window.fb.collection(window.db,"products")
-    );
-
-    snap.forEach(docSnap => {
-
-        let p = docSnap.data();
-
-        box.innerHTML += `
-        <div style="border:1px solid #ddd;padding:10px;margin:10px;border-radius:10px;">
-            <b>${p.name}</b><br>
-            UGX ${p.price}<br>
-            <img src="${p.image}" width="80"><br><br>
-
-            <button onclick="deleteProduct('${docSnap.id}')">🗑 Delete</button>
-        </div>
-        `;
-    });
-}
-
-async function loadUserOrders(){
-
-    let user = window.auth.currentUser;
-    if (!user) return;
-
-    let box = document.getElementById("orders");
-    if (!box) return;
-
-    box.innerHTML = "";
-
-    const q = window.fb.query(
-        window.fb.collection(window.db, "orders"),
-        window.fb.where("userId", "==", user.uid)
-    );
-
-    const snap = await window.fb.getDocs(q);
-
-    if (snap.empty) {
-        box.innerHTML = "<p>No orders yet</p>";
-        return;
-    }
-
-    snap.forEach(doc => {
-
-        let o = doc.data();
-
-        box.innerHTML += `
-        <div style="background:#fff;padding:10px;margin:10px;border-radius:10px;">
-            <p><b>Status:</b> ${o.status}</p>
-            <p><b>Total:</b> UGX ${o.total}</p>
-        </div>
-        `;
-    });
-}
-
-async function deleteProduct(id){
-
-    await window.fb.deleteDoc(
-        window.fb.doc(window.db,"products",id)
-    );
-
-    alert("Deleted!");
-    loadProducts();
-    loadAdminProducts();
-}
-
-async function checkout(){
-
-    let user = window.auth.currentUser;
-
-    if (!user) {
-        alert("You must login first");
-        return;
-    }
-
-    if (cart.length === 0) {
-        alert("Cart is empty");
-        return;
-    }
-
-    let total = 0;
-
-    let items = cart.map(item => {
-        let t = item.price * item.qty;
-        total += t;
-
-        return {
-            name: item.name,
-            qty: item.qty,
-            price: item.price,
-            total: t
-        };
-    });
-
-    try {
-
-        await window.fb.addDoc(
-            window.fb.collection(window.db, "orders"),
-            {
-                userId: user.uid,
-                items: items,
-                total: total,
-                status: "Pending",
-                createdAt: window.fb.serverTimestamp()
-            }
-        );
-
-        alert("Order placed successfully!");
-
-        cart = [];
-        saveCart();
-        updateCart();
-
-        loadUserOrders();
-
-    } catch (err) {
-        console.error("Order failed:", err);
-        alert("Order failed. Try again.");
-    }
-}
-
-function payNow(){
-alert("Flutterwave integration stays same here");
-}
-
-async function loadAllOrders(){
-
-    let container = document.getElementById("admin-orders");
-    container.innerHTML = "";
-
-    let snap = await window.fb.getDocs(
-        window.fb.collection(window.db,"orders")
-    );
-
-    snap.forEach(docSnap=>{
-        let o = docSnap.data();
-
-        container.innerHTML += `
-        <div style="background:#f9f9f9;padding:10px;margin:10px;border-radius:10px;">
-            <p><b>Total:</b> UGX ${o.total}</p>
-            <p><b>Status:</b> ${o.status}</p>
-
-            <select onchange="updateOrderStatus('${docSnap.id}', this.value)">
-                <option>Pending</option>
-                <option>Shipped</option>
-                <option>Delivered</option>
-            </select>
-        </div>
-        `;
-    });
-}
-
-async function updateOrderStatus(id, status){
-
-    await window.fb.updateDoc(
-        window.fb.doc(window.db,"orders",id),
-        { status: status }
-    );
-
-    alert("Order updated!");
-    loadAllOrders();
-}
-
+/* INIT */
+function start(){
 updateCart();
 loadProducts();
-loadAllOrders();
-
-window.onload = function(){
-    loadProducts();
-};
-
-function initSystem(){
-
-    console.log("T-Petie system starting...");
-
-    loadProducts();
-    updateCart();
-
-    let user = window.auth?.currentUser;
-    if (user) {
-        loadUserOrders();
-    }
 }
 
-window.addEventListener("load", initSystem);
-function refreshAll(){
-    loadProducts();
-    loadAdminProducts();
-}
-loadAdminProducts();
+window.addEventListener("load",start);
 </script>
-
 
 </body>
 </html>
