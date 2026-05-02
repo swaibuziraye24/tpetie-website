@@ -275,7 +275,7 @@ body {
     <img src="perfume3.jpg">
 </div>
 
-<div class="products" id="product-list">
+<div class="products" id="product-list"></div>
 
     <!-- PERFUMES -->
     <div class="product perfume">
@@ -498,8 +498,6 @@ setInterval(() => {
 // ================= INIT =================
 updateCart();
 
-</script>
-
 
 function openPopup(name, price){
     document.getElementById("popup").style.display="flex";
@@ -587,57 +585,6 @@ function payNow(){
 }
 
 
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-
-function addProduct(){
-    let name = document.getElementById("p-name").value;
-    let price = document.getElementById("p-price").value;
-    let image = document.getElementById("p-image").value;
-    let category = document.getElementById("p-category").value;
-
-    db.collection("products").add({
-        name,
-        price,
-        image,
-        category
-    }).then(()=>{
-        alert("Product added!");
-        loadProducts();
-    });
-}
-
-
-function loadProducts(){
-    let container = document.getElementById("product-list");
-    container.innerHTML = "";
-
-    db.collection("products").get().then(snapshot=>{
-        snapshot.forEach(doc=>{
-            let p = doc.data();
-
-            container.innerHTML += `
-            <div class="product ${p.category}">
-                <img src="${p.image}">
-                <h3>${p.name}</h3>
-                <p class="price">UGX ${p.price}</p>
-                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-            </div>
-            `;
-        });
-    });
-}
-
-loadProducts();
-
-
 </script>
 
 <button onclick="payNow()">Pay Now</button>
@@ -664,6 +611,84 @@ align-items:center;
 
 </div>
 
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔴 PUT YOUR REAL CONFIG HERE
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ================= ADD PRODUCT =================
+window.addProduct = async function(){
+    let name = document.getElementById("p-name").value;
+    let price = document.getElementById("p-price").value;
+    let image = document.getElementById("p-image").value;
+    let category = document.getElementById("p-category").value;
+
+    if(!name || !price || !image){
+        alert("Fill all fields");
+        return;
+    }
+
+    await addDoc(collection(db, "products"), {
+        name,
+        price: Number(price),
+        image,
+        category
+    });
+
+    alert("Product added!");
+    loadProducts();
+}
+
+// ================= LOAD PRODUCTS =================
+window.loadProducts = async function(){
+    let container = document.getElementById("product-list");
+    if(!container) return;
+
+    container.innerHTML = "Loading...";
+
+    let snapshot = await getDocs(collection(db, "products"));
+
+    container.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+        let p = docSnap.data();
+
+        container.innerHTML += `
+        <div class="product ${p.category}">
+            <img src="${p.image}">
+            <h3>${p.name}</h3>
+            <p class="price">UGX ${p.price}</p>
+
+            <button onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+
+            <button onclick="deleteProduct('${docSnap.id}')" 
+            style="background:red;color:white;">
+            Delete
+            </button>
+        </div>
+        `;
+    });
+}
+
+// ================= DELETE =================
+window.deleteProduct = async function(id){
+    await deleteDoc(doc(db, "products", id));
+    loadProducts();
+}
+
+// LOAD ON START
+loadProducts();
+</script>
 </body>
 </html>
