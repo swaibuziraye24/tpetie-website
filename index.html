@@ -325,6 +325,14 @@ body {
 </div>
 
 <!-- CART -->
+<div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
+  <h3>Customer Details</h3>
+
+  <input id="c-name" placeholder="Your Name" style="width:100%;padding:8px;"><br><br>
+  <input id="c-phone" placeholder="Phone Number (07XXXXXXXX)" style="width:100%;padding:8px;"><br><br>
+  <input id="c-location" placeholder="Delivery Location" style="width:100%;padding:8px;">
+</div>
+
 <div id="cart-box">
     <h2>Your Cart</h2>
     <div id="cart-items"></div>
@@ -494,25 +502,50 @@ function closePopup(){
 }
 
 function checkout(){
+
     if(cart.length === 0){
         alert("Cart is empty!");
         return;
     }
 
-    let phone="256705816160"; // PUT REAL NUMBER
-    let msg="🛍 T-Petie Beauty Order:\n";
+    let name = document.getElementById("c-name").value;
+    let phoneInput = document.getElementById("c-phone").value;
+    let location = document.getElementById("c-location").value;
 
-    let total=0;
+    if(!name || !phoneInput || !location){
+        alert("Please fill all customer details");
+        return;
+    }
+
+    let businessPhone = "256705816160"; // YOUR NUMBER
+
+    let message = "🛍 *T-Petie Beauty Order*\n\n";
+
+    message += "*Customer Details*\n";
+    message += "Name: " + name + "\n";
+    message += "Phone: " + phoneInput + "\n";
+    message += "Location: " + location + "\n\n";
+
+    message += "*Order Items*\n";
+
+    let total = 0;
 
     cart.forEach(item=>{
-        let t=item.price*item.qty;
-        total+=t;
-        msg+=`- ${item.name} x${item.qty} = UGX ${t}\n`;
+        let itemTotal = item.price * item.qty;
+        total += itemTotal;
+
+        message += "- " + item.name + " x" + item.qty + " = UGX " + itemTotal + "\n";
     });
 
-    msg+=`\nTotal: UGX ${total}`;
+    message += "\n*Total: UGX " + total + "*\n\n";
 
-    window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(msg));
+    message += "*Payment Method*\n";
+    message += "MTN / Airtel Mobile Money\n";
+    message += "You will receive payment instructions after placing order.";
+
+    let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
+
+    window.open(url, "_blank");
 }
 
 
