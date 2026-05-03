@@ -518,7 +518,12 @@ function closePopup(){
 }
 
 function checkout(){
-    let phone="2567XXXXXXXX"; // client number
+    if(cart.length === 0){
+        alert("Cart is empty!");
+        return;
+    }
+
+    let phone="2567XXXXXXXX"; // PUT REAL NUMBER
     let msg="🛍 T-Petie Beauty Order:\n";
 
     let total=0;
@@ -530,86 +535,8 @@ function checkout(){
     });
 
     msg+=`\nTotal: UGX ${total}`;
-    msg+=`\nPayment: MTN/Airtel Mobile Money`;
 
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
-}
-
-
-async function addProduct(){
-    if(!isAdmin){
-        alert("Admin only");
-        return;
-    }
-
-    let file = document.getElementById("p-image").files[0];
-
-    let imageUrl = await uploadImage(file);
-
-    let name = document.getElementById("p-name").value;
-    let price = document.getElementById("p-price").value;
-    let category = document.getElementById("p-category").value;
-
-    db.collection("products").add({
-        name,
-        price,
-        image: imageUrl,
-        category
-    }).then(()=>{
-        alert("Product uploaded!");
-        loadProducts();
-    });
-}
-
-
-function getCartTotal(){
-    let total = 0;
-    cart.forEach(item=>{
-        total += item.price * item.qty;
-    });
-    return total;
-}
-
-function payNow(){
-    let total = getCartTotal();
-
-    if(total <= 0){
-        alert("Cart is empty");
-        return;
-    }
-
-    FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-XXXX",
-        tx_ref: "tpetie_" + Date.now(),
-        amount: total,
-        currency: "UGX",
-        payment_options: "mobilemoneyuganda",
-        customer: {
-            email: "customer@email.com",
-            name: "Customer"
-        },
-        callback: function(response){
-            alert("Payment successful!");
-            saveOrder(window.auth.currentUser, cart);
-        }
-    });
-}
-
-async function saveOrder(user, cart){
-    if(!user){
-        alert("Login first");
-        return;
-    }
-
-    await db.collection("orders").add({
-        userId: user.uid,
-        items: cart,
-        total: getCartTotal(),
-        status: "Pending",
-        createdAt: new Date()
-    });
-
-    alert("Order saved!");
 }
 
 
@@ -693,26 +620,23 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ================= ADD PRODUCT =================
-window.addProduct = async function(){
+function addProduct(){
     let name = document.getElementById("p-name").value;
     let price = document.getElementById("p-price").value;
     let image = document.getElementById("p-image").value;
     let category = document.getElementById("p-category").value;
 
-    if(!name || !price || !image){
-        alert("Fill all fields");
-        return;
-    }
-
-    await addDoc(collection(db, "products"), {
+    db.collection("products").add({
         name,
         price: Number(price),
         image,
         category
+    }).then(()=>{
+        alert("Product added!");
+        loadProducts();
+    }).catch(err=>{
+        alert("Error: " + err.message);
     });
-
-    alert("Product added!");
-    loadProducts();
 }
 
 // ================= LOAD PRODUCTS =================
