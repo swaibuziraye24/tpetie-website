@@ -336,6 +336,7 @@ body {
   <h3>Admin Login</h3>
   <input id="admin-user" placeholder="Username"><br><br>
   <input id="admin-pass" type="password" placeholder="Password"><br><br>
+  <input type="file" id="p-image"><br><br>
   <button onclick="adminLogin()">Login</button>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
@@ -607,21 +608,29 @@ window.addProduct = async function(){
     let name = document.getElementById("p-name").value;
     let price = document.getElementById("p-price").value;
     let category = document.getElementById("p-category").value;
+    let file = document.getElementById("p-image").files[0];
 
-    if(!name || !price){
-        alert("Fill all fields");
+    if(!name || !price || !file){
+        alert("Fill all fields + image");
         return;
     }
 
     try{
+        // 🔥 Upload image to Firebase Storage
+        const storageRef = ref(storage, "products/" + Date.now() + file.name);
+        await uploadBytes(storageRef, file);
+
+        const imageURL = await getDownloadURL(storageRef);
+
+        // 🔥 Save product with real image
         await addDoc(collection(db, "products"), {
             name: name,
             price: Number(price),
-            image: "perfume.jpg", // default image for now
+            image: imageURL,
             category: category
         });
 
-        alert("Product added successfully!");
+        alert("✅ Product added with image!");
         loadProducts();
 
     }catch(error){
