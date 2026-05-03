@@ -580,6 +580,9 @@ import {
   getDownloadURL 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+window.addProduct = addProduct;
+window.deleteProduct = deleteProduct;
+window.loadProducts = loadProducts;
 
 // 🔥 YOUR CONFIG (already correct)
 const firebaseConfig = {
@@ -599,83 +602,87 @@ const storage = getStorage(app);
 
 
 // ================= ADD PRODUCT =================
-window.addProduct = async function(){
+async function addProduct(){
     if(!isAdmin){
-        alert("Login as admin first");
+        alert("Admin only!");
         return;
     }
 
     let name = document.getElementById("p-name").value;
     let price = document.getElementById("p-price").value;
     let category = document.getElementById("p-category").value;
-    let file = document.getElementById("p-image").files[0];
+    let file = document.getElementById("p-image-file").files[0];
 
-    if(!name || !price || !file){
-        alert("Fill all fields + image");
+    if(!file){
+        alert("Please select an image");
         return;
     }
 
     try{
-        // 🔥 Upload image to Firebase Storage
-        const storageRef = ref(storage, "products/" + Date.now() + file.name);
+        // Upload image to Firebase Storage
+        const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
         await uploadBytes(storageRef, file);
 
-        const imageURL = await getDownloadURL(storageRef);
+        // Get image URL
+        const imageUrl = await getDownloadURL(storageRef);
 
-        // 🔥 Save product with real image
+        // Save product to Firestore
         await addDoc(collection(db, "products"), {
-            name: name,
+            name,
             price: Number(price),
-            image: imageURL,
-            category: category
+            image: imageUrl,
+            category
         });
 
-        alert("✅ Product added with image!");
+        alert("Product added successfully!");
+
         loadProducts();
 
-    }catch(error){
-        alert("Error: " + error.message);
+    }catch(err){
+        alert("Error: " + err.message);
     }
-};
+}
 
 
 // ================= LOAD PRODUCTS =================
-window.loadProducts = async function(){
+async function loadProducts(){
     let container = document.getElementById("product-list");
     container.innerHTML = "";
 
-    try{
-        const snapshot = await getDocs(collection(db, "products"));
+    const snapshot = await getDocs(collection(db, "products"));
 
-        snapshot.forEach(docSnap => {
-            let p = docSnap.data();
+    snapshot.forEach(docSnap=>{
+        let p = docSnap.data();
+        let id = docSnap.id;
 
-            container.innerHTML += `
-            <div class="product ${p.category}">
-                <img src="${p.image}">
-                <h3>${p.name}</h3>
-                <p class="price">UGX ${p.price}</p>
-                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-                <button onclick="deleteProduct('${docSnap.id}')">Delete</button>
-            </div>
-            `;
-        });
+        container.innerHTML += `
+        <div class="product ${p.category}">
+            <img src="${p.image}">
+            <h3>${p.name}</h3>
+            <p class="price">UGX ${p.price}</p>
 
-    }catch(err){
-        console.log(err);
-    }
-};
+            <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+
+            <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
+                Delete
+            </button>
+        </div>
+        `;
+    });
+}
 
 
 // ================= DELETE PRODUCT =================
-window.deleteProduct = async function(id){
-    try{
-        await deleteDoc(doc(db, "products", id));
-        loadProducts();
-    }catch(err){
-        alert("Delete failed");
+async function deleteProduct(id){
+    if(!isAdmin){
+        alert("Admin only!");
+        return;
     }
-};
+
+    await deleteDoc(doc(db, "products", id));
+    alert("Deleted!");
+    loadProducts();
+}
 
 
 // ================= IMAGE UPLOAD (OPTIONAL) =================
