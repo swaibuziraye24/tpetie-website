@@ -587,7 +587,8 @@ import {
   addDoc, 
   getDocs, 
   deleteDoc, 
-  doc 
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import { 
@@ -596,6 +597,8 @@ import {
   uploadBytes, 
   getDownloadURL 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+let editingId = null;
 
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
@@ -644,12 +647,44 @@ async function addProduct(){
         const imageUrl = await getDownloadURL(storageRef);
 
         // Save product to Firestore
-        await addDoc(collection(db, "products"), {
-            name,
-            price: Number(price),
-            image: imageUrl,
-            category
-        });
+        if(editingId){
+    // UPDATE PRODUCT
+    let data = {
+        name,
+        price: Number(price),
+        category
+    };
+
+    // if new image selected → upload
+    if(file){
+        const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
+        await uploadBytes(storageRef, file);
+        const imageUrl = await getDownloadURL(storageRef);
+        data.image = imageUrl;
+    }
+
+    await updateDoc(doc(db, "products", editingId), data);
+
+    alert("Product updated!");
+
+    editingId = null;
+
+}else{
+    // ADD NEW PRODUCT
+    const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
+    await uploadBytes(storageRef, file);
+
+    const imageUrl = await getDownloadURL(storageRef);
+
+    await addDoc(collection(db, "products"), {
+        name,
+        price: Number(price),
+        image: imageUrl,
+        category
+    });
+
+    alert("Product added!");
+}
 
         alert("Product added successfully!");
 
@@ -680,6 +715,10 @@ async function loadProducts(){
 
             <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
 
+            <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.image}')">
+    Edit
+</button>
+
             <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
                 Delete
             </button>
@@ -701,6 +740,20 @@ async function deleteProduct(id){
     loadProducts();
 }
 
+window.editProduct = function(id, name, price, category, image){
+    editingId = id;
+
+    document.getElementById("p-name").value = name;
+    document.getElementById("p-price").value = price;
+    document.getElementById("p-category").value = category;
+
+    // show preview
+    let preview = document.getElementById("preview");
+    preview.src = image;
+    preview.style.display = "block";
+
+    alert("Editing product... click ADD PRODUCT to update");
+};
 
 // ================= IMAGE UPLOAD (OPTIONAL) =================
 window.uploadImage = async function(file){
