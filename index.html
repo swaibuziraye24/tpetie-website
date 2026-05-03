@@ -523,7 +523,7 @@ function checkout(){
         return;
     }
 
-    let phone="2567XXXXXXXX"; // PUT REAL NUMBER
+    let phone="256705816160"; // PUT REAL NUMBER
     let msg="🛍 T-Petie Beauty Order:\n";
 
     let total=0;
@@ -536,7 +536,7 @@ function checkout(){
 
     msg+=`\nTotal: UGX ${total}`;
 
-    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg));
+    window.open("https://wa.me/"+256705816160+"?text="+encodeURIComponent(msg));
 }
 
 
@@ -640,33 +640,23 @@ function addProduct(){
 }
 
 // ================= LOAD PRODUCTS =================
-window.loadProducts = async function(){
+function loadProducts(){
     let container = document.getElementById("product-list");
-    if(!container) return;
-
-    container.innerHTML = "Loading...";
-
-    let snapshot = await getDocs(collection(db, "products"));
-
     container.innerHTML = "";
 
-    snapshot.forEach(docSnap => {
-        let p = docSnap.data();
+    db.collection("products").get().then(snapshot=>{
+        snapshot.forEach(doc=>{
+            let p = doc.data();
 
-        container.innerHTML += `
-        <div class="product ${p.category}">
-            <img src="${p.image}">
-            <h3>${p.name}</h3>
-            <p class="price">UGX ${p.price}</p>
-
-            <button onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
-
-            <button onclick="deleteProduct('${docSnap.id}')" 
-            style="background:red;color:white;">
-            Delete
-            </button>
-        </div>
-        `;
+            container.innerHTML += `
+            <div class="product ${p.category}">
+                <img src="${p.image}">
+                <h3>${p.name}</h3>
+                <p class="price">UGX ${p.price}</p>
+                <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+            </div>
+            `;
+        });
     });
 }
 
