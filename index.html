@@ -545,7 +545,7 @@ function checkout(){
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
-    window.open(url, "_blank");
+    window.location.href = url;
 }
 
 // ONLY initialize cart if not already saved
