@@ -548,8 +548,11 @@ function checkout(){
     window.open(url, "_blank");
 }
 
-cart = [];
-saveCart();
+// ONLY initialize cart if not already saved
+if(!localStorage.getItem("cart")){
+    cart = [];
+    saveCart();
+}
 updateCart();
 
 
