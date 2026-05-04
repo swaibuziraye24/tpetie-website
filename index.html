@@ -563,7 +563,7 @@ window.checkout = function(){
         return;
     }
 
-    let businessPhone = "256790548910"; // your WhatsApp number
+    let businessPhone = "256790548910";
     let orderId = "TP" + Date.now();
 
     let message = "🛍 *NEW ORDER - T-PETIE BEAUTY*\n\n";
@@ -590,25 +590,26 @@ window.checkout = function(){
     message += "\n💰 Total: UGX " + total + "\n\n";
     message += "Please confirm order 🙏";
 
-// SAVE ORDER TO FIREBASE (backup system)
-addDoc(collection(db, "orders"), {
-    name,
-    phone: phoneInput,
-    location,
-    items: cart,
-    total: total,
-    orderId,
-    createdAt: new Date().toISOString()
-});
+    // SAVE ORDER TO FIREBASE (FIXED)
+    addDoc(collection(db, "orders"), {
+        name: name,
+        phone: phone,
+        location: location,
+        items: cart,
+        total: total,
+        orderId: orderId,
+        createdAt: new Date().toISOString()
+    });
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
     window.open(url, "_blank");
-};
 
-cart = [];
-saveCart();
-updateCart();
+    // RESET CART (MUST BE INSIDE FUNCTION)
+    cart = [];
+    saveCart();
+    updateCart();
+};
 
 let isAdmin = false;
 
