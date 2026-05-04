@@ -225,14 +225,14 @@ body {
     <button onclick="filterProducts('perfume')">Perfumes</button>
     <button onclick="filterProducts('cosmetics')">Cosmetics</button>
     <button onclick="filterProducts('bags')">Bags</button>
-    <button onclick="filterProducts('household')">Household</button>
-    <button onclick="filterProducts('electronics')">Electronics</button>
-    <button onclick="filterProducts('grocerries')">Grocerries</button>
-    <button onclick="filterProducts('clothes')">Clothes</button>
-    <button onclick="filterProducts('bike spare')">Bike Spare</button>
-    <button onclick="filterProducts('moto spare')">Moto Spare</button>
-    <button onclick="filterProducts('phones')">Phones</button>
 
+    <button onclick="filterProducts('household')">Household</button>
+    <button onclick="filterProducts('phones')">Phones</button>
+    <button onclick="filterProducts('groceries')">Groceries</button>
+    <button onclick="filterProducts('motor_spare')">Motor Spare</button>
+    <button onclick="filterProducts('bike_spare')">Bike Spare</button>
+    <button onclick="filterProducts('clothes')">Clothes</button>
+    <button onclick="filterProducts('electronics')">Electronics</button>
 </div>
 
 <div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
@@ -241,18 +241,20 @@ body {
     <input id="p-name" placeholder="Product name"><br><br>
     <input id="p-price" placeholder="Price"><br><br>
     
+<select id="p-category">
+    <option value="perfume">Perfume</option>
+    <option value="cosmetics">Cosmetics</option>
+    <option value="bags">Bags</option>
 
-    <select id="p-category">
-        <option value="perfume">Perfume</option>
-        <option value="cosmetics">Cosmetics</option>
-        <option value="bags">Bags</option>
-        <option value="phones">Phones</option>
-        <option value="grocerries">Grocerries</option>
-        <option value="household">Household</option>
-        <option value="electronics">Electronics</option>
-        <option value="moto spare">Moto Spare</option>
-        <option value="clothes">Clothes</option>
-    </select><br><br>
+    <option value="household">Household</option>
+    <option value="phones">Phones</option>
+    <option value="groceries">Groceries</option>
+    <option value="motor_spare">Motor Spare</option>
+    <option value="bike_spare">Bike Spare</option>
+    <option value="clothes">Clothes</option>
+    <option value="electronics">Electronics</option>
+</select><br><br>
+    
 
     <button onclick="addProduct()">Add Product</button>
 </div>
