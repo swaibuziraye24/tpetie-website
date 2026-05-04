@@ -505,8 +505,8 @@ function closePopup(){
     document.getElementById("popup").style.display="none";
 }
 
-function checkout(){
-window.checkout = checkout;
+window.checkout = function(){
+
     if(cart.length === 0){
         alert("Cart is empty!");
         return;
@@ -525,15 +525,11 @@ window.checkout = checkout;
     let orderId = "TP" + Date.now();
 
     let message = "🛍 *T-Petie Beauty Center*\n";
-    message += "━━━━━━━━━━━━━━━\n";
-    message += "📦 *Order ID:* " + orderId + "\n\n";
+    message += "📦 Order ID: " + orderId + "\n\n";
 
-    message += "👤 *Customer Details*\n";
     message += "Name: " + name + "\n";
     message += "Phone: " + phoneInput + "\n";
     message += "Location: " + location + "\n\n";
-
-    message += "🛒 *Order Items*\n";
 
     let total = 0;
 
@@ -546,20 +542,13 @@ window.checkout = checkout;
                    " = UGX " + itemTotal + "\n";
     });
 
-    message += "\n━━━━━━━━━━━━━━━\n";
-    message += "💰 *Total: UGX " + total + "*\n\n";
-    message += "📞 Please confirm this order.";
+    message += "\nTotal: UGX " + total;
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
-    // safer redirect
-    let win = window.open(url, "_blank");
-
-    if(!win){
-        window.location.href = url;
-    }
+    window.location.href = url;
 };
-
+window.checkout = checkout;
 
 let isAdmin = false;
 
