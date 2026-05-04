@@ -506,7 +506,7 @@ function closePopup(){
 }
 
 function checkout(){
-
+window.checkout = checkout;
     if(cart.length === 0){
         alert("Cart is empty!");
         return;
@@ -559,7 +559,7 @@ function checkout(){
         window.location.href = url;
     }
 };
-window.checkout = checkout;
+
 
 let isAdmin = false;
 
