@@ -773,7 +773,7 @@ async function loadProducts(){
 
         container.innerHTML += `
         <div class="product ${p.category}">
-            <img src="${p.image}">
+            <img src="${p.image || 'https://via.placeholder.com/150'}">
             <h3>${p.name}</h3>
             <p class="price">UGX ${p.price}</p>
 
