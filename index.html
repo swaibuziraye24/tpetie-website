@@ -590,16 +590,16 @@ window.checkout = function(){
     message += "\n💰 Total: UGX " + total + "\n\n";
     message += "Please confirm order 🙏";
 
-let orderData = {
-    orderId: orderId,
-    customerName: name,
+// SAVE ORDER TO FIREBASE (backup system)
+addDoc(collection(db, "orders"), {
+    name,
     phone: phoneInput,
-    location: location,
+    location,
     items: cart,
     total: total,
-    date: new Date().toISOString()
-};
-
+    orderId,
+    createdAt: new Date().toISOString()
+});
 saveOrderToFirebase(orderData);
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
