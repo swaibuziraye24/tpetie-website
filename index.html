@@ -505,8 +505,9 @@ function closePopup(){
     document.getElementById("popup").style.display="none";
 }
 
-window.checkout = function checkout(){
+function checkout(){
 
+window.checkout = checkout;
     if(cart.length === 0){
         alert("Cart is empty!");
         return;
@@ -559,15 +560,6 @@ window.checkout = function checkout(){
         window.location.href = url;
     }
 };
-
-
-// ONLY initialize cart if not already saved
-if(!localStorage.getItem("cart")){
-    cart = [];
-    saveCart();
-}
-updateCart();
-
 
 
 let isAdmin = false;
