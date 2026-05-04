@@ -562,6 +562,19 @@ window.checkout = function(){
     });
 
     message += "\n💰 Total: UGX " + total + "\n\n";
+
+let orderData = {
+    orderId: orderId,
+    customerName: name,
+    phone: phoneInput,
+    location: location,
+    items: cart,
+    total: total,
+    date: new Date().toISOString()
+};
+
+saveOrderToFirebase(orderData);
+
     message += "Please confirm order 🙏";
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
@@ -659,9 +672,19 @@ import {
 
 let editingId = null;
 
+async function saveOrderToFirebase(orderData){
+    try{
+        await addDoc(collection(db, "orders"), orderData);
+        console.log("Order saved");
+    }catch(err){
+        console.error("Error saving order:", err);
+    }
+}
+
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
 window.loadProducts = loadProducts;
+window.saveOrderToFirebase = saveOrderToFirebase;
 
 // 🔥 YOUR CONFIG (already correct)
 const firebaseConfig = {
