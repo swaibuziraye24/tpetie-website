@@ -377,6 +377,19 @@ body {
   <img id="preview" style="width:100%;max-height:150px;margin-top:10px;display:none;border-radius:8px;">
   <button onclick="adminLogin()">Login</button>
 </div>
+
+<div id="admin-panel" style="display:none;padding:10px;background:#fff;margin:10px;border-radius:10px;">
+
+<h2>Admin Dashboard</h2>
+
+<h3>📦 Products</h3>
+<div id="admin-products"></div>
+
+<h3>🛒 Orders</h3>
+<div id="admin-orders"></div>
+
+</div>
+
 <!--
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
@@ -575,6 +588,7 @@ window.checkout = function(){
     });
 
     message += "\n💰 Total: UGX " + total + "\n\n";
+    message += "Please confirm order 🙏";
 
 let orderData = {
     orderId: orderId,
@@ -588,13 +602,14 @@ let orderData = {
 
 saveOrderToFirebase(orderData);
 
-    message += "Please confirm order 🙏";
-
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
     window.open(url, "_blank");
 };
 
+cart = [];
+saveCart();
+updateCart();
 
 let isAdmin = false;
 
@@ -607,6 +622,9 @@ function adminLogin(){
         alert("Admin logged in");
 
         document.getElementById("admin-login").style.display = "none";
+
+        document.getElementById("admin-panel").style.display = "block";
+loadAdminData();
     } else {
         alert("Wrong credentials");
     }
@@ -821,7 +839,51 @@ async function loadProducts(){
         `;
     });
 }
+async function loadAdminData(){
 
+    // PRODUCTS
+    let pContainer = document.getElementById("admin-products");
+    pContainer.innerHTML = "";
+
+    const productsSnap = await getDocs(collection(db, "products"));
+
+    productsSnap.forEach(docSnap=>{
+        let p = docSnap.data();
+        let id = docSnap.id;
+
+        pContainer.innerHTML += `
+        <div style="border:1px solid #ddd;padding:10px;margin:5px;">
+            <b>${p.name}</b><br>
+            UGX ${p.price}<br>
+            Category: ${p.category}<br>
+
+            <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
+                Delete
+            </button>
+        </div>
+        `;
+    });
+
+    // ORDERS
+    let oContainer = document.getElementById("admin-orders");
+    oContainer.innerHTML = "";
+
+    const ordersSnap = await getDocs(collection(db, "orders"));
+
+    ordersSnap.forEach(docSnap=>{
+        let o = docSnap.data();
+
+        oContainer.innerHTML += `
+        <div style="border:1px solid #ddd;padding:10px;margin:5px;">
+            <b>${o.name}</b><br>
+            📞 ${o.phone}<br>
+            📍 ${o.location}<br>
+            💰 UGX ${o.total}<br>
+            🆔 ${o.orderId}
+        </div>
+        `;
+    });
+}
 
 // ================= DELETE PRODUCT =================
 async function deleteProduct(id){
@@ -860,6 +922,7 @@ window.uploadImage = async function(file){
 
 // LOAD PRODUCTS ON START
 loadProducts();
+loadAdminData();
 
 
 </script>
