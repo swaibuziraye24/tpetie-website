@@ -361,7 +361,7 @@ body {
 
 // ================= CART SYSTEM =================
 // Ensure cart syncs correctly
-cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 updateCart();
 
 function addToCart(name, price) {
@@ -505,7 +505,7 @@ function closePopup(){
     document.getElementById("popup").style.display="none";
 }
 
-function checkout(){
+window.checkout = function checkout(){
 
     if(cart.length === 0){
         alert("Cart is empty!");
@@ -522,8 +522,6 @@ function checkout(){
     }
 
     let businessPhone = "256790548910";
-
-    // 🔥 AUTO ORDER ID
     let orderId = "TP" + Date.now();
 
     let message = "🛍 *T-Petie Beauty Center*\n";
@@ -543,25 +541,25 @@ function checkout(){
         let itemTotal = item.price * item.qty;
         total += itemTotal;
 
-        message += (index+1) + ". " + item.name + 
-                   " x" + item.qty + 
+        message += (index+1) + ". " + item.name +
+                   " x" + item.qty +
                    " = UGX " + itemTotal + "\n";
     });
 
     message += "\n━━━━━━━━━━━━━━━\n";
     message += "💰 *Total: UGX " + total + "*\n\n";
-
-    message += "💳 *Payment Method*\n";
-    message += "MTN / Airtel Mobile Money\n\n";
-
     message += "📞 Please confirm this order.";
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
-    // ✅ STRONG REDIRECT (NO BLOCKING)
-    window.open(url, "_blank");
-}
-window.checkout = checkout;
+    // safer redirect
+    let win = window.open(url, "_blank");
+
+    if(!win){
+        window.location.href = url;
+    }
+};
+
 
 // ONLY initialize cart if not already saved
 if(!localStorage.getItem("cart")){
@@ -570,10 +568,7 @@ if(!localStorage.getItem("cart")){
 }
 updateCart();
 
-// Clear cart after sending order
-cart = [];
-saveCart();
-updateCart();
+
 
 let isAdmin = false;
 
