@@ -517,35 +517,27 @@ function checkout(){
         return;
     }
 
-    let businessPhone = "+256705816160"; // YOUR NUMBER
+    let businessPhone = "256705816160";
 
-    let message = "🛍 *T-Petie Beauty Order*\n\n";
+    let message = "🛍 T-Petie Beauty Order\n\n";
 
-    message += "*Customer Details*\n";
     message += "Name: " + name + "\n";
     message += "Phone: " + phoneInput + "\n";
     message += "Location: " + location + "\n\n";
 
-    message += "*Order Items*\n";
-
     let total = 0;
 
     cart.forEach(item=>{
-        let itemTotal = item.price * item.qty;
-        total += itemTotal;
-
-        message += "- " + item.name + " x" + item.qty + " = UGX " + itemTotal + "\n";
+        let t = item.price * item.qty;
+        total += t;
+        message += "- " + item.name + " x" + item.qty + " = UGX " + t + "\n";
     });
 
-    message += "\n*Total: UGX " + total + "*\n\n";
-
-    message += "*Payment Method*\n";
-    message += "MTN / Airtel Mobile Money\n";
-    message += "You will receive payment instructions after placing order.";
+    message += "\nTotal: UGX " + total;
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
-    window.location.href = url;
+    window.open(url, "_blank");
 }
 
 // ONLY initialize cart if not already saved
