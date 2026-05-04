@@ -358,7 +358,9 @@ body {
 <script>
 
 // ================= CART SYSTEM =================
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// Ensure cart syncs correctly
+cart = JSON.parse(localStorage.getItem("cart")) || [];
+updateCart();
 
 function addToCart(name, price) {
     let existing = cart.find(item => item.name === name);
@@ -555,7 +557,7 @@ function checkout(){
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
     // ✅ STRONG REDIRECT (NO BLOCKING)
-    window.location.href = url;
+    window.open(url, "_blank");
 }
 
 // ONLY initialize cart if not already saved
@@ -565,6 +567,10 @@ if(!localStorage.getItem("cart")){
 }
 updateCart();
 
+// Clear cart after sending order
+cart = [];
+saveCart();
+updateCart();
 
 let isAdmin = false;
 
