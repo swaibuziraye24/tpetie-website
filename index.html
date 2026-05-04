@@ -124,12 +124,19 @@ body {
 }
 
 .topbar {
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: linear-gradient(45deg, #ff6600, #ff9900);
+    padding: 12px;
+    color: white;
+    font-weight: bold;
 }
 
 .product {
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: 0.3s;
-    border: 1px solid #eee;
+    position: relative;
 }
 
 .product:hover {
@@ -138,7 +145,13 @@ body {
 }
 
 .product button {
-    background: #ff6600;
+    background: linear-gradient(45deg, #ff6600, #ff9900);
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.product:hover {
+    transform: scale(1.05);
 }
 
 .product button:hover {
