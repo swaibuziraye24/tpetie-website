@@ -547,7 +547,7 @@ function closePopup(){
     document.getElementById("popup").style.display="none";
 }
 
-window.checkout = function(){
+window.checkout = async function(){
 
     if(cart.length === 0){
         alert("Cart is empty!");
@@ -570,9 +570,7 @@ window.checkout = function(){
     message += "Order ID: " + orderId + "\n\n";
 
     message += "👤 Customer:\n";
-    message += name + "\n";
-    message += phone + "\n";
-    message += location + "\n\n";
+    message += name + "\n" + phone + "\n" + location + "\n\n";
 
     message += "🛒 Items:\n";
 
@@ -582,30 +580,37 @@ window.checkout = function(){
         let itemTotal = item.price * item.qty;
         total += itemTotal;
 
-        message += (i+1) + ". " + item.name +
-                   " x" + item.qty +
-                   " = UGX " + itemTotal + "\n";
+        message += `${i+1}. ${item.name} x${item.qty} = UGX ${itemTotal}\n`;
     });
 
-    message += "\n💰 Total: UGX " + total + "\n\n";
-    message += "Please confirm order 🙏";
+    message += `\n💰 Total: UGX ${total}\n`;
 
-    // SAVE ORDER TO FIREBASE (FIXED)
-    addDoc(collection(db, "orders"), {
-        name: name,
-        phone: phone,
-        location: location,
-        items: cart,
-        total: total,
-        orderId: orderId,
-        createdAt: new Date().toISOString()
-    });
+    // ✅ FIREBASE SAVE FIXED
+    if(window.firestoreAddDoc){
+
+        await window.firestoreAddDoc(
+            window.firestoreCollection(window.db, "orders"),
+            {
+                name,
+                phone,
+                location,
+                items: cart,
+                total,
+                orderId,
+                createdAt: new Date().toISOString()
+            }
+        );
+    }
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
     window.open(url, "_blank");
 
-} 
+    // clear cart AFTER success
+    cart = [];
+    saveCart();
+    updateCart();
+};
 
 let isAdmin = false;
 
@@ -915,6 +920,10 @@ window.uploadImage = async function(file){
     await uploadBytes(storageRef, file);
     return await getDownloadURL(storageRef);
 };
+
+window.db = db;
+window.firestoreAddDoc = addDoc;
+window.firestoreCollection = collection;
 
 // LOAD PRODUCTS ON START
 loadProducts();
