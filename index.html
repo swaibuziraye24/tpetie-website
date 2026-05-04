@@ -600,7 +600,6 @@ addDoc(collection(db, "orders"), {
     orderId,
     createdAt: new Date().toISOString()
 });
-saveOrderToFirebase(orderData);
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
