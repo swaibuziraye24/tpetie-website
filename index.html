@@ -356,7 +356,7 @@ body {
     <button onclick="checkout()">Checkout</button>
 </div>
 
-<div id="orders-list" style="padding:10px;background:#f9f9f9;margin:10px;border-radius:10px;"></div>
+<div id="orders-list" style="display:none;padding:10px;background:#f9f9f9;margin:10px;border-radius:10px;"></div>
 
 <div id="admin-login" style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
   <h3>Admin Login</h3>
@@ -598,6 +598,9 @@ function adminLogin(){
     if(user === "admin" && pass === "1234"){
         isAdmin = true;
         alert("Admin logged in");
+
+        document.getElementById("orders-list").style.display = "block";
+loadOrders();
 
         document.getElementById("admin-login").style.display = "none";
     } else {
