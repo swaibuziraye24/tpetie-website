@@ -356,6 +356,8 @@ body {
     <button onclick="checkout()">Checkout</button>
 </div>
 
+<div id="orders-list" style="padding:10px;background:#f9f9f9;margin:10px;border-radius:10px;"></div>
+
 <div id="admin-login" style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
   <h3>Admin Login</h3>
   <input id="admin-user" placeholder="Username"><br><br>
@@ -844,6 +846,45 @@ loadProducts();
 window.db = db;
 window.addDoc = addDoc;
 window.collection = collection;
+
+// ================= LOAD ORDERS =================
+async function loadOrders(){
+    let container = document.getElementById("orders-list");
+    if(!container) return;
+
+    container.innerHTML = "<h3>Orders</h3>";
+
+    const snapshot = await getDocs(collection(db, "orders"));
+
+    snapshot.forEach(docSnap=>{
+        let o = docSnap.data();
+
+        let itemsHTML = "";
+
+        o.items.forEach(item=>{
+            itemsHTML += `
+                <li>${item.name} x${item.qty} = UGX ${item.price * item.qty}</li>
+            `;
+        });
+
+        container.innerHTML += `
+        <div style="background:#fff;padding:10px;margin:10px;border-radius:10px;">
+            <strong>Order ID:</strong> ${o.orderId}<br>
+            <strong>Name:</strong> ${o.customerName}<br>
+            <strong>Phone:</strong> ${o.phone}<br>
+            <strong>Location:</strong> ${o.location}<br>
+
+            <strong>Items:</strong>
+            <ul>${itemsHTML}</ul>
+
+            <strong>Total:</strong> UGX ${o.total}
+        </div>
+        `;
+    });
+}
+
+// AUTO LOAD ORDERS
+loadOrders();
 
 </script>
 </body>
