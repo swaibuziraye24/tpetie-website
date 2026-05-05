@@ -356,6 +356,32 @@ body {
     <button onclick="checkout()">Checkout</button>
 </div>
 
+<div id="dashboard" style="
+display:none;
+padding:10px;
+margin:10px;
+">
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+        <div style="flex:1;background:#fff;padding:15px;border-radius:10px;">
+            <h4>Total Orders</h4>
+            <h2 id="total-orders">0</h2>
+        </div>
+
+        <div style="flex:1;background:#fff;padding:15px;border-radius:10px;">
+            <h4>Total Revenue</h4>
+            <h2 id="total-revenue">UGX 0</h2>
+        </div>
+
+        <div style="flex:1;background:#fff;padding:15px;border-radius:10px;">
+            <h4>Delivered</h4>
+            <h2 id="delivered-orders">0</h2>
+        </div>
+
+    </div>
+</div>
+
 <div id="orders-list" style="display:none;padding:10px;background:#f9f9f9;margin:10px;border-radius:10px;"></div>
 
 <div id="admin-login" style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
@@ -602,6 +628,8 @@ function adminLogin(){
 
         document.getElementById("orders-list").style.display = "block";
 loadOrders();
+
+document.getElementById("dashboard").style.display = "block";
 
         document.getElementById("admin-login").style.display = "none";
     } else {
@@ -851,6 +879,10 @@ window.db = db;
 window.addDoc = addDoc;
 window.collection = collection;
 
+let totalOrders = 0;
+let totalRevenue = 0;
+let deliveredCount = 0;
+
 // ================= LOAD ORDERS =================
 async function loadOrders(){
     let container = document.getElementById("orders-list");
@@ -868,8 +900,20 @@ async function loadOrders(){
         o.items.forEach(item=>{
             itemsHTML += `
                 <li>${item.name} x${item.qty} = UGX ${item.price * item.qty}</li>
+
+                totalOrders++;
+totalRevenue += o.total;
+
+if(o.status === "Delivered"){
+    deliveredCount++;
+}
             `;
         });
+
+document.getElementById("total-orders").innerText = totalOrders;
+document.getElementById("total-revenue").innerText = "UGX " + totalRevenue;
+document.getElementById("delivered-orders").innerText = deliveredCount;
+
 
         container.innerHTML += `
 <div style="background:#fff;padding:10px;margin:10px;border-radius:10px;">
