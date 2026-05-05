@@ -568,7 +568,7 @@ try {
     await addDoc(collection(db, "orders"), {
         orderId: orderId,
         customerName: name,
-        phone: phoneInput,
+        phone: phone,
         location: location,
         items: cart,
         total: total,
