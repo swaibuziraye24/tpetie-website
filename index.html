@@ -521,7 +521,7 @@ function closePopup(){
     document.getElementById("popup").style.display="none";
 }
 
-window.checkout = function(){
+async function checkout(){
 
     if(cart.length === 0){
         alert("Cart is empty!");
@@ -583,7 +583,7 @@ try {
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
-    window.location.href = url;
+    window.open(url, "_blank");
 };
 
 
@@ -841,7 +841,9 @@ window.uploadImage = async function(file){
 
 // LOAD PRODUCTS ON START
 loadProducts();
-
+window.db = db;
+window.addDoc = addDoc;
+window.collection = collection;
 
 </script>
 </body>
