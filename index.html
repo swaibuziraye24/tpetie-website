@@ -564,9 +564,26 @@ window.checkout = function(){
     message += "\n💰 Total: UGX " + total + "\n\n";
     message += "Please confirm order 🙏";
 
+try {
+    await addDoc(collection(db, "orders"), {
+        orderId: orderId,
+        customerName: name,
+        phone: phoneInput,
+        location: location,
+        items: cart,
+        total: total,
+        createdAt: new Date()
+    });
+
+    console.log("Order saved to Firebase");
+
+} catch (err) {
+    console.error("Error saving order:", err);
+}
+
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
 
-    window.open(url, "_blank");
+    window.location.href = url;
 };
 
 
