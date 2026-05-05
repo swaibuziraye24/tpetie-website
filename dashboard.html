@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Admin Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f5f5;
+    margin: 0;
+}
+
+.header {
+    background: #ff6600;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+}
+
+.orders {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.total {
+    font-weight: bold;
+    color: green;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">📊 Admin Dashboard</div>
+
+<div class="orders" id="orders"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC59...",
+  authDomain: "tpetie-web.firebaseapp.com",
+  projectId: "tpetie-web",
+  storageBucket: "tpetie-web.firebasestorage.app",
+  messagingSenderId: "633080855193",
+  appId: "1:633080855193:web:985b3d1aae0dc85c745608"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function loadOrders(){
+    let container = document.getElementById("orders");
+    container.innerHTML = "Loading...";
+
+    const snapshot = await getDocs(collection(db, "orders"));
+
+    container.innerHTML = "";
+
+    snapshot.forEach(doc=>{
+        let o = doc.data();
+
+        let itemsHTML = "";
+        o.items.forEach(item=>{
+            itemsHTML += `<li>${item.name} x${item.qty}</li>`;
+        });
+
+        container.innerHTML += `
+        <div class="card">
+            <h3>Order ID: ${o.orderId}</h3>
+
+            <p><strong>Name:</strong> ${o.customerName}</p>
+            <p><strong>Phone:</strong> ${o.phone}</p>
+            <p><strong>Location:</strong> ${o.location}</p>
+
+            <p><strong>Items:</strong></p>
+            <ul>${itemsHTML}</ul>
+
+            <p class="total">Total: UGX ${o.total}</p>
+        </div>
+        `;
+    });
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>
