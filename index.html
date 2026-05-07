@@ -733,6 +733,10 @@ window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
 window.loadProducts = loadProducts;
 
+window.loadOrders = loadOrders;
+window.deleteOrder = deleteOrder;
+window.markDelivered = markDelivered;
+
 // 🔥 YOUR CONFIG (already correct)
 const firebaseConfig = {
   apiKey: "AIzaSyC59wie7DnrhWYI60VWv3Sizbyqo6AKi3g",
@@ -934,6 +938,9 @@ totalRevenue += o.total;
 if(o.status === "Delivered"){
     deliveredCount++;
 }
+
+window.loadOrders = loadOrders;
+
 
 document.getElementById("total-orders").innerText = totalOrders;
 document.getElementById("total-revenue").innerText = "UGX " + totalRevenue;
