@@ -641,6 +641,9 @@ window.adminLogin = async function(){
 
         loadOrders();
 
+
+document.getElementById("orders-list").style.display = "block";
+
     } catch(err){
 
         alert("Login failed: " + err.message);
@@ -746,6 +749,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app);
+
+window.auth = auth;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 
 // ================= ADD PRODUCT =================
 async function addProduct(){
@@ -895,12 +901,15 @@ window.db = db;
 window.addDoc = addDoc;
 window.collection = collection;
 
-let totalOrders = 0;
-let totalRevenue = 0;
-let deliveredCount = 0;
 
 // ================= LOAD ORDERS =================
 async function loadOrders(){
+
+
+    totalOrders = 0;
+    totalRevenue = 0;
+    deliveredCount = 0;
+
     let container = document.getElementById("orders-list");
     if(!container) return;
 
@@ -913,18 +922,18 @@ async function loadOrders(){
 
         let itemsHTML = "";
 
-        o.items.forEach(item=>{
-            itemsHTML += `
-                <li>${item.name} x${item.qty} = UGX ${item.price * item.qty}</li>
+       o.items.forEach(item=>{
+    itemsHTML += `
+        <li>${item.name} x${item.qty} = UGX ${item.price * item.qty}</li>
+    `;
+});
 
-                totalOrders++;
+totalOrders++;
 totalRevenue += o.total;
 
 if(o.status === "Delivered"){
-    deliveredCount++; 
+    deliveredCount++;
 }
-            `;
-        });
 
 document.getElementById("total-orders").innerText = totalOrders;
 document.getElementById("total-revenue").innerText = "UGX " + totalRevenue;
