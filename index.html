@@ -356,14 +356,6 @@ body {
     <button onclick="checkout()">Checkout</button>
 </div>
 
-<div id="dashboard" style="
-display:none;
-min-height:100vh;
-background:#f4f6f9;
-">
-
-<div style="display:flex;">
-
 
     <!-- SIDEBAR -->
 <div style="
@@ -513,6 +505,15 @@ font-weight:bold;
 cursor:pointer;
 ">
 Login
+
+<div id="dashboard" style="
+display:none;
+min-height:100vh;
+background:#f4f6f9;
+">
+
+<div style="display:flex;">
+
 </button>
 </div>
 <!--
@@ -738,6 +739,8 @@ try {
     window.open(url, "_blank");
 };
 
+document.getElementById("admin-login").style.display = "block";
+document.getElementById("dashboard").style.display = "none";
 
 let isAdmin = false;
 let editingId = null;
@@ -754,6 +757,8 @@ window.adminLogin = async function(){
         isAdmin = true;
 
         alert("Admin login successful");
+
+console.log("LOGIN SUCCESS - dashboard should now show");
 
         document.getElementById("admin-login").style.display = "none";
 
