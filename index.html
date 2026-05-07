@@ -925,11 +925,12 @@ async function loadOrders(){
         let o = docSnap.data();
 
         let itemsHTML = "";
+o.items.forEach(item=>{
 
-       o.items.forEach(item=>{
     itemsHTML += `
         <li>${item.name} x${item.qty} = UGX ${item.price * item.qty}</li>
     `;
+
 });
 
 totalOrders++;
