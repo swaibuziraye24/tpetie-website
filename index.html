@@ -618,22 +618,33 @@ try {
 
 let isAdmin = false;
 
-function adminLogin(){
-    let user = document.getElementById("admin-user").value;
-    let pass = document.getElementById("admin-pass").value;
+window.adminLogin = async function(){
 
-    if(user === "admin" && pass === "1234"){
+    let email = document.getElementById("admin-user").value;
+    let password = document.getElementById("admin-pass").value;
+
+    try {
+
+        await signInWithEmailAndPassword(auth, email, password);
+
         isAdmin = true;
-        alert("Admin logged in");
 
-        document.getElementById("orders-list").style.display = "block";
-loadOrders();
-
-document.getElementById("dashboard").style.display = "block";
+        alert("Admin login successful");
 
         document.getElementById("admin-login").style.display = "none";
-    } else {
-        alert("Wrong credentials");
+
+        let dashboard = document.getElementById("dashboard");
+
+        if(dashboard){
+            dashboard.style.display = "block";
+        }
+
+        loadOrders();
+
+    } catch(err){
+
+        alert("Login failed: " + err.message);
+
     }
 }
 
@@ -708,6 +719,11 @@ import {
   getDownloadURL 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 let editingId = null;
 
 window.addProduct = addProduct;
@@ -729,7 +745,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
+const auth = getAuth(app);
 
 // ================= ADD PRODUCT =================
 async function addProduct(){
