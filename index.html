@@ -358,7 +358,7 @@ body {
 
 <!-- TOP -->
 <div class="topbar">
-    <h2>T-Petie</h2>
+   <h2 ondblclick="openAdminLogin()">T-Petie</h2>
     <input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
     <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
 </div>
@@ -733,6 +733,7 @@ padding:20px;
 
 
 <div id="admin-login" style="
+display:none;
 padding:20px;
 background:white;
 margin:20px auto;
@@ -1095,6 +1096,17 @@ function showSection(sectionId){
     document.getElementById(sectionId).style.display = "block";
 }
 
+
+function openAdminLogin(){
+
+    let loginBox = document.getElementById("admin-login");
+
+    if(loginBox.style.display === "none"){
+        loginBox.style.display = "block";
+    }else{
+        loginBox.style.display = "none";
+    }
+}
 
 function payNow(){
     alert("Payment system not yet connected.");
