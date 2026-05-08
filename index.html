@@ -450,6 +450,26 @@ Logout
 
 </div>
 
+
+<div id="customer-orders-box" style="
+background:white;
+margin:10px;
+padding:15px;
+border-radius:10px;
+display:none;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+">
+
+<h3>My Orders</h3>
+
+<div id="customer-orders-list">
+
+No orders yet
+
+</div>
+
+</div>
+
 <!-- CATEGORIES -->
 <div class="categories">
     <button onclick="filterProducts('all')" class="active">All</button>
@@ -972,21 +992,27 @@ async function checkout(){
     message += "Please confirm order 🙏";
 
 try {
+
     await addDoc(collection(db, "orders"), {
+
         orderId: orderId,
         customerName: name,
+        customerEmail: auth.currentUser ? auth.currentUser.email : "Guest",
         phone: phone,
         location: location,
         items: cart,
         total: total,
         status: "Pending",
         createdAt: new Date()
+
     });
 
     console.log("Order saved to Firebase");
 
 } catch (err) {
+
     console.error("Error saving order:", err);
+
 }
 
     let url = "https://wa.me/" + businessPhone + "?text=" + encodeURIComponent(message);
@@ -1040,7 +1066,7 @@ console.log("LOGIN SUCCESS - dashboard should now show");
         loadOrders();
 
 
-document.getElementById("orders-list").style.display = "block";
+       document.getElementById("orders-list").style.display = "block";
 
     } catch(err){
 
@@ -1580,15 +1606,78 @@ onAuthStateChanged(auth, (user)=>{
         document.getElementById("customer-name").innerText =
             "Logged in as: " + user.email;
 
+        // SHOW CUSTOMER ORDERS
+        document.getElementById("customer-orders-box").style.display = "block";
+
+        // LOAD CUSTOMER ORDERS
+        loadCustomerOrders();
+
     }else{
 
         document.getElementById("auth-form").style.display = "block";
 
         document.getElementById("customer-profile").style.display = "none";
 
+        // HIDE CUSTOMER ORDERS
+        document.getElementById("customer-orders-box").style.display = "none";
+
     }
 
 });
+
+
+// ================= CUSTOMER ORDERS =================
+
+async function loadCustomerOrders(){
+
+    if(!auth.currentUser) return;
+
+    let container = document.getElementById("customer-orders-list");
+
+    if(!container) return;
+
+    container.innerHTML = "Loading orders...";
+
+    const snapshot = await getDocs(collection(db, "orders"));
+
+    let html = "";
+
+    snapshot.forEach(docSnap=>{
+
+        let o = docSnap.data();
+
+        if(o.customerEmail === auth.currentUser.email){
+
+            html += `
+            <div style="
+            background:#f9fafb;
+            padding:12px;
+            margin-bottom:10px;
+            border-radius:10px;
+            border-left:4px solid #ff6600;
+            ">
+
+            <strong>Order ID:</strong> ${o.orderId}<br>
+            <strong>Total:</strong> UGX ${o.total}<br>
+
+            <strong>Status:</strong>
+
+            <span style="
+            color:${o.status === 'Delivered' ? 'green' : 'orange'};
+            font-weight:bold;
+            ">
+            ${o.status}
+            </span>
+
+            </div>
+            `;
+        }
+
+    });
+
+    container.innerHTML = html || "No orders found";
+
+}
 
 
 </script>
