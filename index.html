@@ -402,8 +402,8 @@ body {
     <option value="electronics">Electronics</option>
 </select><br><br>
     
-<<label style="display:block;font-weight:bold;margin-top:10px;">
-Product Images
+<label style="display:block;font-weight:bold;margin-top:10px;">
+Product Images (Pro Max)
 </label>
 
 <div id="drop-zone" style="
@@ -414,18 +414,19 @@ border-radius:10px;
 cursor:pointer;
 background:#fff;
 ">
-📁 Click or Drag & Drop Image Here
-<input type="file" id="p-image" accept="image/*" style="display:none;">
+📁 Click or Drag & Drop Images Here
+<br>
+<small>Supports multiple images</small>
+
+<input type="file" id="p-image" accept="image/*" multiple style="display:none;">
 </div>
 
-<img id="preview" style="
-width:100%;
-max-height:180px;
+<div id="preview-container" style="
+display:flex;
+gap:10px;
+flex-wrap:wrap;
 margin-top:10px;
-display:none;
-border-radius:10px;
-object-fit:cover;
-">
+"></div>
 
     <button onclick="addProduct()">Add Product</button>
 </div>
@@ -1037,6 +1038,7 @@ if(imageInput){
 
 }
 
+
 </script>
 
 <button onclick="payNow()">Pay Now</button>
@@ -1062,6 +1064,90 @@ align-items:center;
 </div>
 
 </div>
+
+let dropZone = document.getElementById("drop-zone");
+let fileInput = document.getElementById("p-image");
+let previewContainer = document.getElementById("preview-container");
+
+let selectedFiles = [];
+
+// open file picker
+dropZone.addEventListener("click", () => fileInput.click());
+
+// drag over
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.background = "#fff3e6";
+});
+
+// drag leave
+dropZone.addEventListener("dragleave", () => {
+    dropZone.style.background = "#fff";
+});
+
+// drop files
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    handleFiles(e.dataTransfer.files);
+});
+
+// file select
+fileInput.addEventListener("change", (e) => {
+    handleFiles(e.target.files);
+});
+
+function handleFiles(files){
+    for(let file of files){
+        selectedFiles.push(file);
+        renderPreview(file);
+    }
+}
+
+// render preview
+function renderPreview(file){
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+
+        let div = document.createElement("div");
+        div.style.position = "relative";
+
+        div.innerHTML = `
+            <img src="${e.target.result}" style="
+                width:100px;
+                height:100px;
+                object-fit:cover;
+                border-radius:8px;
+                box-shadow:0 3px 10px rgba(0,0,0,0.2);
+            ">
+            <button style="
+                position:absolute;
+                top:5px;
+                right:5px;
+                background:red;
+                color:white;
+                border:none;
+                border-radius:50%;
+                width:20px;
+                height:20px;
+                cursor:pointer;
+            ">×</button>
+        `;
+
+        // remove image
+        div.querySelector("button").onclick = () => {
+            div.remove();
+            selectedFiles = selectedFiles.filter(f => f !== file);
+        };
+
+        previewContainer.appendChild(div);
+    };
+
+    reader.readAsDataURL(file);
+}
+
+
+window.selectedFiles = selectedFiles;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -1126,12 +1212,26 @@ async function addProduct(){
     let name = document.getElementById("p-name").value;
     let price = document.getElementById("p-price").value;
     let category = document.getElementById("p-category").value;
-    let file = document.getElementById("p-image").files[0];
+    
 
-    if(!file){
-        alert("Please select an image");
-        return;
-    }
+let files = window.selectedFiles;
+
+if(files.length === 0){
+    alert("Please select at least one image");
+    return;
+}
+
+let imageUrls = [];
+
+for(let file of files){
+
+   const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
+await uploadBytes(storageRef, file);
+const imageUrl = await getDownloadURL(storageRef);
+
+    imageUrls.push(imageUrl);
+}
+
 
     try{
         // Upload image to Firebase Storage
@@ -1145,17 +1245,19 @@ async function addProduct(){
         if(editingId){
     // UPDATE PRODUCT
     let data = {
-        name,
-        price: Number(price),
-        category
-    };
+    name,
+    price: Number(price),
+    category,
+    images: imageUrls
+};
+
+await updateDoc(doc(db, "products", editingId), data);
 
     // if new image selected → upload
     if(file){
         const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
         await uploadBytes(storageRef, file);
-        const imageUrl = await getDownloadURL(storageRef);
-        data.image = imageUrl;
+        data.image = await getDownloadURL(storageRef);
     }
 
     await updateDoc(doc(db, "products", editingId), data);
@@ -1172,11 +1274,11 @@ async function addProduct(){
     const imageUrl = await getDownloadURL(storageRef);
 
     await addDoc(collection(db, "products"), {
-        name,
-        price: Number(price),
-        image: imageUrl,
-        category
-    });
+    name,
+    price: Number(price),
+    category,
+    images: imageUrls
+});
 
     alert("Product added!");
 }
@@ -1204,13 +1306,28 @@ async function loadProducts(){
 
         container.innerHTML += `
         <div class="product ${p.category}">
-            <img src="${p.image || 'https://via.placeholder.com/150'}">
+            <div style="position:relative;">
+    <img src="${p.images ? p.images[0] : 'https://via.placeholder.com/150'}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
+    
+    <div style="
+        position:absolute;
+        bottom:5px;
+        left:5px;
+        background:rgba(0,0,0,0.6);
+        color:white;
+        font-size:10px;
+        padding:2px 6px;
+        border-radius:4px;
+    ">
+        ${p.images ? p.images.length : 1} photos
+    </div>
+</div>
             <h3>${p.name}</h3>
             <p class="price">UGX ${p.price}</p>
 
             <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
 
-            <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.image}')">
+            <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images[0]}')">
     Edit
 </button>
 
@@ -1367,6 +1484,8 @@ window.markDelivered = async function(id){
     loadOrders();
 };
 
+
 </script>
+
 </body>
 </html>
