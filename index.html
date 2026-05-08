@@ -1317,11 +1317,7 @@ const imageUrl = await getDownloadURL(storageRef);
 await updateDoc(doc(db, "products", editingId), data);
 
     // if new image selected → upload
-    if(file){
-        const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
-        await uploadBytes(storageRef, file);
-        data.image = await getDownloadURL(storageRef);
-    }
+    
 
     await updateDoc(doc(db, "products", editingId), data);
 
@@ -1331,10 +1327,7 @@ await updateDoc(doc(db, "products", editingId), data);
 
 }else{
     // ADD NEW PRODUCT
-    const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
-    await uploadBytes(storageRef, file);
-
-    const imageUrl = await getDownloadURL(storageRef);
+    
 
     await addDoc(collection(db, "products"), {
     name,
