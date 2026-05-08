@@ -486,8 +486,7 @@ No orders yet
     <button onclick="filterProducts('electronics')">Electronics</button>
 </div>
 
-<div style="padding:10px;background:#fff;margin:10px;border-radius:10px;">
-    <h3>Add Product (Admin)</h3>
+<div id="admin-product-panel" style="display:none;padding:10px;background:#fff;margin:10px;border-radius:10px;"></div>
 
     <input id="p-name" placeholder="Product name"><br><br>
     <input id="p-price" placeholder="Price"><br><br>
@@ -1026,8 +1025,10 @@ try {
     window.open(url, "_blank");
 };
 
-
+// FORCE ADMIN UI HIDDEN ON START
 document.getElementById("dashboard").style.display = "none";
+document.getElementById("admin-login").style.display = "none";
+
 
 let isAdmin = false;
 let editingId = null;
@@ -1049,6 +1050,10 @@ if(adminEmails.includes(email)){
 
     isAdmin = true;
 
+    // SHOW ADMIN UI
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("admin-login").style.display = "none";
+document.getElementById("admin-product-panel").style.display = "block";
 }else{
 
     alert("Not authorized as admin");
@@ -1058,7 +1063,8 @@ if(adminEmails.includes(email)){
         alert("Admin login successful");
 
 console.log("LOGIN SUCCESS - dashboard should now show");
-
+document.getElementById("orders-section").style.display = "none";
+document.getElementById("products-section").style.display = "none";
         document.getElementById("admin-login").style.display = "none";
 
         let dashboard = document.getElementById("dashboard");
@@ -1088,6 +1094,11 @@ function showSection(sectionId){
     document.getElementById("products-section").style.display = "none";
 
     document.getElementById(sectionId).style.display = "block";
+}
+
+if(!isAdmin){
+    alert("Admin only area");
+    return;
 }
 
 
