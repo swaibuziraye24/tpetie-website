@@ -1105,7 +1105,7 @@ let dropZone = document.getElementById("drop-zone");
 let fileInput = document.getElementById("p-image");
 let previewContainer = document.getElementById("preview-container");
 
-let selectedFiles = [];
+window.selectedFiles = [];
 
 // open file picker
 dropZone.addEventListener("click", () => fileInput.click());
@@ -1281,8 +1281,7 @@ async function addProduct(){
     let price = document.getElementById("p-price").value;
     let category = document.getElementById("p-category").value;
     
-
-window.selectedFiles = [];
+let files = window.selectedFiles;
 
 if(files.length === 0){
     alert("Please select at least one image");
@@ -1390,9 +1389,8 @@ async function loadProducts(){
             <p class="price">UGX ${p.price}</p>
 
             <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+<button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
 
-            <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images[0]}')">
-    Edit
 </button>
 
             <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
