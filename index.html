@@ -1048,11 +1048,10 @@ window.collection = collection;
 // ================= LOAD ORDERS =================
 async function loadOrders(){
 
-
-    totalOrders = 0;
-    totalRevenue = 0;
-    deliveredCount = 0;
-
+let totalOrders = 0;
+let totalRevenue = 0;
+let deliveredCount = 0;
+    
     let container = document.getElementById("orders-list");
     if(!container) return;
 
@@ -1079,7 +1078,7 @@ if(o.status === "Delivered"){
     deliveredCount++;
 }
 
-window.loadOrders = loadOrders;
+
 
 document.getElementById("total-orders").innerText = totalOrders;
 document.getElementById("total-revenue").innerText = "UGX " + totalRevenue;
