@@ -389,6 +389,19 @@ body {
     <option value="electronics">Electronics</option>
 </select><br><br>
     
+<input type="file" id="p-image" accept="image/*"><br><br>
+
+<img id="preview" style="
+width:100%;
+max-height:150px;
+display:none;
+border-radius:8px;
+object-fit:cover;
+">
+
+<label style="display:block;margin-top:10px;font-weight:bold;">
+Upload Product Image
+</label>
 
     <button onclick="addProduct()">Add Product</button>
 </div>
@@ -625,8 +638,7 @@ padding:12px;
 border:1px solid #ccc;
 border-radius:8px;
 ">
-  <input type="file" id="p-image"><br><br>
-  <img id="preview" style="width:100%;max-height:150px;margin-top:10px;display:none;border-radius:8px;">
+  
   <button onclick="adminLogin()" style="
 width:100%;
 padding:12px;
