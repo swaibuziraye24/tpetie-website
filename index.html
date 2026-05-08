@@ -338,6 +338,19 @@ body {
     gap: 15px;
 }
 
+#drop-zone {
+    transition: 0.3s;
+}
+
+#drop-zone:hover {
+    background: #fff3e6;
+    transform: scale(1.01);
+}
+
+#drop-zone:active {
+    transform: scale(0.98);
+}
+
 </style>
 </head>
 
@@ -389,19 +402,30 @@ body {
     <option value="electronics">Electronics</option>
 </select><br><br>
     
-<input type="file" id="p-image" accept="image/*"><br><br>
+<<label style="display:block;font-weight:bold;margin-top:10px;">
+Product Images
+</label>
+
+<div id="drop-zone" style="
+border:2px dashed #ff6600;
+padding:20px;
+text-align:center;
+border-radius:10px;
+cursor:pointer;
+background:#fff;
+">
+📁 Click or Drag & Drop Image Here
+<input type="file" id="p-image" accept="image/*" style="display:none;">
+</div>
 
 <img id="preview" style="
 width:100%;
-max-height:150px;
+max-height:180px;
+margin-top:10px;
 display:none;
-border-radius:8px;
+border-radius:10px;
 object-fit:cover;
 ">
-
-<label style="display:block;margin-top:10px;font-weight:bold;">
-Upload Product Image
-</label>
 
     <button onclick="addProduct()">Add Product</button>
 </div>
@@ -940,6 +964,56 @@ function showSection(sectionId){
 
 function payNow(){
     alert("Payment system not yet connected.");
+}
+
+let dropZone = document.getElementById("drop-zone");
+let fileInput = document.getElementById("p-image");
+let preview = document.getElementById("preview");
+
+// click to open file picker
+if(dropZone){
+    dropZone.addEventListener("click", () => fileInput.click());
+}
+
+// drag over effect
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.background = "#fff3e6";
+});
+
+// drag leave
+dropZone.addEventListener("dragleave", () => {
+    dropZone.style.background = "#fff";
+});
+
+// drop image
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+
+    let file = e.dataTransfer.files[0];
+    fileInput.files = e.dataTransfer.files;
+
+    showPreview(file);
+});
+
+// normal file select
+fileInput.addEventListener("change", (e) => {
+    let file = e.target.files[0];
+    showPreview(file);
+});
+
+// preview function
+function showPreview(file){
+    if(!file) return;
+
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
 }
 
 let imageInput = document.getElementById("p-image");
