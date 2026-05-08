@@ -768,7 +768,7 @@ border:1px solid #ccc;
 border-radius:8px;
 ">
   
-  <button onclick="adminLogin()" style="
+ <button onclick="adminLogin()" style="
 width:100%;
 padding:12px;
 background:#ff6600;
@@ -780,6 +780,17 @@ font-weight:bold;
 cursor:pointer;
 ">
 Login
+</button>
+
+</div>
+
+<div id="dashboard" style="
+display:none;
+min-height:100vh;
+background:#f4f6f9;
+">
+
+<div style="display:flex;">
 
 <div id="dashboard" style="
 display:none;
@@ -1123,7 +1134,7 @@ fileInput.addEventListener("change", (e) => {
 
 function handleFiles(files){
     for(let file of files){
-        selectedFiles.push(file);
+        window.selectedFiles.push(file);
         renderPreview(file);
     }
 }
@@ -1162,7 +1173,8 @@ function renderPreview(file){
         // remove image
         div.querySelector("button").onclick = () => {
             div.remove();
-            selectedFiles = selectedFiles.filter(f => f !== file);
+            window.selectedFiles =
+window.selectedFiles.filter(f => f !== file);
         };
 
         previewContainer.appendChild(div);
@@ -1270,7 +1282,7 @@ async function addProduct(){
     let category = document.getElementById("p-category").value;
     
 
-let files = window.selectedFiles;
+window.selectedFiles = [];
 
 if(files.length === 0){
     alert("Please select at least one image");
@@ -1291,11 +1303,7 @@ const imageUrl = await getDownloadURL(storageRef);
 
     try{
         // Upload image to Firebase Storage
-        const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
-        await uploadBytes(storageRef, file);
 
-        // Get image URL
-        const imageUrl = await getDownloadURL(storageRef);
 
         // Save product to Firestore
         if(editingId){
@@ -1363,7 +1371,7 @@ async function loadProducts(){
         container.innerHTML += `
         <div class="product ${p.category}">
             <div style="position:relative;">
-    <img src="${p.images ? p.images[0] : 'https://via.placeholder.com/150'}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
+    <img src="'${p.images ? p.images[0] : ""}' 'https://via.placeholder.com/150'}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
     
     <div style="
         position:absolute;
@@ -1416,9 +1424,7 @@ window.editProduct = function(id, name, price, category, image){
     document.getElementById("p-category").value = category;
 
     // show preview
-    let preview = document.getElementById("preview");
-    preview.src = image;
-    preview.style.display = "block";
+    
 
     alert("Editing product... click ADD PRODUCT to update");
 };
