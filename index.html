@@ -1352,7 +1352,10 @@ await updateDoc(doc(db, "products", editingId), data);
 // ================= LOAD PRODUCTS =================
 async function loadProducts(){
     let container = document.getElementById("product-list");
-    container.innerHTML = "";
+let shopContainer = document.getElementById("shop-product-list");
+
+container.innerHTML = "";
+shopContainer.innerHTML = "";
 
     const snapshot = await getDocs(collection(db, "products"));
 
@@ -1391,6 +1394,23 @@ async function loadProducts(){
             </button>
         </div>
         `;
+        shopContainer.innerHTML += `
+
+<div class="product ${p.category}">
+
+    <img src="${p.images ? p.images[0] : 'https://via.placeholder.com/150'}">
+
+    <h3>${p.name}</h3>
+
+    <p class="price">UGX ${p.price}</p>
+
+    <button onclick="addToCart('${p.name}', ${p.price})">
+        Add
+    </button>
+
+</div>
+
+`;
     });
 }
 
