@@ -234,6 +234,110 @@ body {
     border-radius: 12px;
 }
 
+/* ===================== ADMIN DASHBOARD CLEAN UI ===================== */
+
+#dashboard {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+/* sidebar */
+#dashboard > div > div:first-child {
+    background: #0f172a;
+    color: white;
+}
+
+/* sidebar buttons */
+#dashboard button {
+    background: #1f2937;
+    color: white;
+    transition: 0.2s;
+}
+
+#dashboard button:hover {
+    background: #ff6600;
+}
+
+/* main content area */
+#dashboard-home,
+#orders-section,
+#products-section {
+    padding: 10px;
+}
+
+/* stat cards (top boxes) */
+#dashboard-home div[style*="background:#fff"] {
+    background: white !important;
+    color: #0f172a;
+    border-radius: 12px;
+    padding: 20px !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* numbers in stats */
+#total-orders,
+#total-revenue,
+#delivered-orders {
+    color: #ff6600;
+    font-size: 28px;
+}
+
+/* section titles */
+#dashboard h2,
+#dashboard h3 {
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+/* ===================== ORDERS STYLING ===================== */
+
+#orders-list > div {
+    background: white;
+    padding: 15px;
+    margin: 12px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    color: #0f172a;
+    border-left: 5px solid #ff6600;
+}
+
+/* order headings */
+#orders-list strong {
+    color: #111827;
+}
+
+/* order status */
+#orders-list span {
+    font-weight: bold;
+}
+
+/* order items list */
+#orders-list ul {
+    padding-left: 18px;
+}
+
+/* buttons inside orders */
+#orders-list button {
+    margin-right: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+#orders-list button:hover {
+    opacity: 0.8;
+}
+
+/* ===================== TOP STATS GRID ===================== */
+
+#dashboard-home > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
 </style>
 </head>
 
