@@ -1009,7 +1009,19 @@ window.adminLogin = async function(){
 
         await signInWithEmailAndPassword(window.auth, email, password);
 
-        isAdmin = true;
+        const adminEmails = [
+   "swaibuziraye22@gmail.com"
+];
+
+if(adminEmails.includes(email)){
+
+    isAdmin = true;
+
+}else{
+
+    alert("Not authorized as admin");
+    return;
+}
 
         alert("Admin login successful");
 
