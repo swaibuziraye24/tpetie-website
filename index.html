@@ -391,7 +391,22 @@ T-Petie
 </h2>
 
     <input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
-    <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
+    <div style="display:flex;align-items:center;gap:15px;">
+
+<span 
+onclick="toggleCustomerBox()"
+style="
+cursor:pointer;
+font-size:20px;
+">
+👤
+</span>
+
+<span onclick="toggleCart()" style="cursor:pointer;">
+🛒 (<span id="cart-count">0</span>)
+</span>
+
+</div>
 </div>
 
 <!-- HERO -->
@@ -450,6 +465,12 @@ Login
 </div>
 
 <div id="customer-auth" style="
+display:none;
+position:fixed;
+top:70px;
+right:10px;
+width:320px;
+z-index:9999;
 background:white;
 padding:15px;
 margin:10px;
@@ -1197,6 +1218,22 @@ window.openAdminLogin = function(){
     }else{
 
         box.style.display = "none";
+
+    }
+}
+
+
+function toggleCustomerBox(){
+
+    let box = document.getElementById("customer-auth");
+
+    if(box.style.display === "block"){
+
+        box.style.display = "none";
+
+    }else{
+
+        box.style.display = "block";
 
     }
 }
