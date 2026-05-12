@@ -13,6 +13,8 @@ body {
 
 /* TOP BAR */
 .topbar {
+
+
     background: #ff9900;
     padding: 10px;
     display: flex;
@@ -486,7 +488,7 @@ No orders yet
     <button onclick="filterProducts('electronics')">Electronics</button>
 </div>
 
-<div id="admin-product-panel" style="display:none;padding:10px;background:#fff;margin:10px;border-radius:10px;"></div>
+<div id="admin-product-panel" style="display:none;padding:10px;background:#fff;margin:10px;border-radius:10px;">
 
     <input id="p-name" placeholder="Product name"><br><br>
     <input id="p-price" placeholder="Price"><br><br>
@@ -714,21 +716,6 @@ padding:20px;
     </div>
 </div>
 
-<div id="orders-section" style="display:none;">
-
-<div id="orders-list"></div>
-
-</div>
-
-<div id="products-section" style="display:none;">
-
-<h2>Products</h2>
-
-<div id="product-list"></div>
-
-</div>
-</div>
-</div>
 
 
 <div id="admin-login" style="
@@ -793,9 +780,24 @@ background:#f4f6f9;
 
 <div style="display:flex;">
 
+<div id="orders-section" style="display:none;">
 
-</button>
+<div id="orders-list"></div>
+
 </div>
+
+<div id="products-section" style="display:none;">
+
+<h2>Products</h2>
+
+<div id="product-list"></div>
+
+</div>
+</div>
+</div>
+
+</div>
+
 <!--
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
@@ -1322,19 +1324,14 @@ const imageUrl = await getDownloadURL(storageRef);
 
 
         // Save product to Firestore
-        if(editingId){
-    // UPDATE PRODUCT
+    if(editingId){
+
     let data = {
-    name,
-    price: Number(price),
-    category,
-    images: imageUrls
-};
-
-await updateDoc(doc(db, "products", editingId), data);
-
-    // if new image selected → upload
-    
+        name,
+        price: Number(price),
+        category,
+        images: imageUrls.length > 0 ? imageUrls : undefined
+    };
 
     await updateDoc(doc(db, "products", editingId), data);
 
@@ -1383,8 +1380,8 @@ shopContainer.innerHTML = "";
         container.innerHTML += `
         <div class="product ${p.category}">
             <div style="position:relative;">
-    <img src="'${p.images ? p.images[0] : ""}' 'https://via.placeholder.com/150'}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
-    
+    <img src="${p.images && p.images.length > 0 ? p.images[0] : 'https://via.placeholder.com/150'}"
+style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
     <div style="
         position:absolute;
         bottom:5px;
@@ -1403,8 +1400,10 @@ shopContainer.innerHTML = "";
 
             <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
 <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
+Edit
 
 </button>
+
 
             <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
                 Delete
