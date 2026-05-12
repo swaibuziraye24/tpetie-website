@@ -1296,35 +1296,37 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let pressTimer;
 
-logo.addEventListener("touchstart", function () {
+    logo.addEventListener("touchstart", function () {
 
-    pressTimer = setTimeout(() => {
+        pressTimer = setTimeout(() => {
 
-        openAdminLogin();
+            openAdminLogin();
 
-    }, 1200);
+        }, 1200);
 
-});
+    });
 
-logo.addEventListener("touchend", function () {
+    logo.addEventListener("touchend", function () {
 
-    clearTimeout(pressTimer);
+        clearTimeout(pressTimer);
 
-});
+    });
 
-logo.addEventListener("mousedown", function () {
+    logo.addEventListener("mousedown", function () {
 
-    pressTimer = setTimeout(() => {
+        pressTimer = setTimeout(() => {
 
-        openAdminLogin();
+            openAdminLogin();
 
-    }, 1200);
+        }, 1200);
 
-});
+    });
 
-logo.addEventListener("mouseup", function () {
+    logo.addEventListener("mouseup", function () {
 
-    clearTimeout(pressTimer);
+        clearTimeout(pressTimer);
+
+    });
 
 });
 
