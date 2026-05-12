@@ -1324,6 +1324,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
+import { setPersistence, browserSessionPersistence }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
@@ -1427,86 +1430,119 @@ const imageUrl = await getDownloadURL(storageRef);
 
 // ================= LOAD PRODUCTS =================
 async function loadProducts(){
+
     let container = document.getElementById("product-list");
-let shopContainer = document.getElementById("shop-product-list");
+    let shopContainer = document.getElementById("shop-product-list");
 
-container.innerHTML = "";
-shopContainer.innerHTML = "";
+    if(container) container.innerHTML = "";
+    if(shopContainer) shopContainer.innerHTML = "";
 
-    const snapshot = await getDocs(collection(db, "products"));
+    try{
 
-    snapshot.forEach(docSnap=>{
-        let p = docSnap.data();
-        let id = docSnap.id;
+        const snapshot = await getDocs(collection(db, "products"));
 
-        
+        snapshot.forEach(docSnap => {
 
-if(isAdmin === true){
+            let p = docSnap.data();
+            let id = docSnap.id;
 
-container.innerHTML += `
-<div class="product ${p.category}">
+            // ================= ADMIN PRODUCTS =================
+            if(isAdmin === true){
 
-    <div style="position:relative;">
+                container.innerHTML += `
 
-        <img src="${p.images && p.images.length > 0 ? p.images[0] : 'https://via.placeholder.com/150'}"
-        style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
+                <div class="product ${p.category}">
 
-        <div style="
-            position:absolute;
-            bottom:5px;
-            left:5px;
-            background:rgba(0,0,0,0.6);
-            color:white;
-            font-size:10px;
-            padding:2px 6px;
-            border-radius:4px;
-        ">
-            ${p.images ? p.images.length : 1} photos
-        </div>
+                    <div style="position:relative;">
 
-    </div>
+                        <img 
+                        src="${p.images && p.images.length > 0 ? p.images[0] : 'https://via.placeholder.com/150'}"
+                        style="
+                        width:100%;
+                        height:150px;
+                        object-fit:cover;
+                        border-radius:8px;
+                        ">
 
-    <h3>${p.name}</h3>
+                        <div style="
+                            position:absolute;
+                            bottom:5px;
+                            left:5px;
+                            background:rgba(0,0,0,0.6);
+                            color:white;
+                            font-size:10px;
+                            padding:2px 6px;
+                            border-radius:4px;
+                        ">
+                            ${p.images ? p.images.length : 1} photos
+                        </div>
 
-    <p class="price">UGX ${p.price}</p>
+                    </div>
 
-    <button onclick="addToCart('${p.name}', ${p.price})">
-        Add
-    </button>
+                    <h3>${p.name}</h3>
 
-    <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
-        Edit
-    </button>
+                    <p class="price">UGX ${p.price}</p>
 
-    <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
-        Delete
-    </button>
+                    <button onclick="addToCart('${p.name}', ${p.price})">
+                        Add
+                    </button>
 
-</div>
-`;
+                    <button onclick="editProduct(
+                        '${id}',
+                        '${p.name}',
+                        ${p.price},
+                        '${p.category}',
+                        '${p.images && p.images.length > 0 ? p.images[0] : ""}'
+                    )">
+                        Edit
+                    </button>
 
+                    <button 
+                    onclick="deleteProduct('${id}')"
+                    style="background:red;color:white;">
+                        Delete
+                    </button>
+
+                </div>
+
+                `;
+            }
+
+            // ================= SHOP PRODUCTS (EVERYONE) =================
+
+            shopContainer.innerHTML += `
+
+            <div class="product ${p.category}">
+
+                <img 
+                src="${p.images && p.images.length > 0 ? p.images[0] : 'https://via.placeholder.com/150'}"
+                style="
+                width:100%;
+                height:150px;
+                object-fit:cover;
+                border-radius:8px;
+                ">
+
+                <h3>${p.name}</h3>
+
+                <p class="price">UGX ${p.price}</p>
+
+                <button onclick="addToCart('${p.name}', ${p.price})">
+                    Add
+                </button>
+
+            </div>
+
+            `;
+
+        });
+
+    }catch(err){
+
+        console.error("Error loading products:", err);
+
+    }
 }
-
-        shopContainer.innerHTML += `
-
-<div class="product ${p.category}">
-
-    <img src="${p.images ? p.images[0] : 'https://via.placeholder.com/150'}">
-
-    <h3>${p.name}</h3>
-
-    <p class="price">UGX ${p.price}</p>
-
-    <button onclick="addToCart('${p.name}', ${p.price})">
-        Add
-    </button>
-
-</div>
-
-`;
-    });
-}
-
 
 // ================= DELETE PRODUCT =================
 async function deleteProduct(id){
