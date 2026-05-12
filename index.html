@@ -360,7 +360,16 @@ body {
 
 <!-- TOP -->
 <div class="topbar">
-   <h2 ondblclick="openAdminLogin()">T-Petie</h2>
+   <h2 
+ondblclick="openAdminLogin()"
+style="
+cursor:pointer;
+user-select:none;
+-webkit-user-select:none;
+"
+>
+T-Petie
+</h2>
     <input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
     <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
 </div>
@@ -1243,6 +1252,20 @@ window.selectedFiles.filter(f => f !== file);
     reader.readAsDataURL(file);
 }
 
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    let logo = document.querySelector(".topbar h2");
+
+    logo.addEventListener("dblclick", function(e){
+
+        e.preventDefault();
+
+        openAdminLogin();
+
+    });
+
+});
 
 
 </script>
