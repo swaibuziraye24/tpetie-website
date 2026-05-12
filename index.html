@@ -1110,7 +1110,7 @@ document.getElementById("admin-login").style.display = "none";
 let isAdmin = false;
 let editingId = null;
 
-window.adminLogin = async function(){
+window.adminLogin = async function () {
 
     let email = document.getElementById("admin-user").value;
     let password = document.getElementById("admin-pass").value;
@@ -1120,54 +1120,47 @@ window.adminLogin = async function(){
         await signInWithEmailAndPassword(window.auth, email, password);
 
         const adminEmails = [
-   "swaibuziraye22@gmail.com"
-];
+            "swaibuziraye22@gmail.com"
+        ];
 
-if(adminEmails.includes(email)){
+        if (!adminEmails.includes(email)) {
 
-    isAdmin = true;
+            alert("Not authorized as admin");
+            return;
 
-    // SHOW ADMIN UI
-    document.getElementById("dashboard").style.display = "block";
+        }
 
-    document.getElementById("products-section").style.display = "none";
-document.getElementById("orders-section").style.display = "none";
-document.getElementById("dashboard-home").style.display = "block";
-    document.getElementById("admin-login").style.display = "none";
-document.getElementById("admin-product-panel").style.display = "block";
-}else{
+        isAdmin = true;
 
-    alert("Not authorized as admin");
-    return;
-}
+        // HIDE LOGIN
+        document.getElementById("admin-login").style.display = "none";
+
+        // SHOW DASHBOARD
+        document.getElementById("dashboard").style.display = "block";
+
+        // SHOW DEFAULT ADMIN SECTION
+        document.getElementById("dashboard-home").style.display = "block";
+
+        // HIDE OTHER SECTIONS
+        document.getElementById("orders-section").style.display = "none";
+        document.getElementById("products-section").style.display = "none";
+
+        // SHOW PRODUCT PANEL
+        document.getElementById("admin-product-panel").style.display = "block";
+
+        // LOAD DATA
+        loadOrders();
+        loadProducts();
 
         alert("Admin login successful");
 
-console.log("LOGIN SUCCESS - dashboard should now show");
-document.getElementById("orders-section").style.display = "none";
-document.getElementById("products-section").style.display = "none";
-        document.getElementById("admin-login").style.display = "none";
-
-        let dashboard = document.getElementById("dashboard");
-
-        if(dashboard){
-            dashboard.style.display = "block";
-        }
-
-        document.getElementById("orders-list").style.display = "block";
-
-        loadOrders();
-
-
-       document.getElementById("orders-list").style.display = "block";
-
-    } catch(err){
+    } catch (err) {
 
         alert("Login failed: " + err.message);
 
     }
-}
 
+}
 function showSection(sectionId){
 
     document.getElementById("dashboard-home").style.display = "none";
