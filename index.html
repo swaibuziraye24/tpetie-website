@@ -1787,36 +1787,31 @@ onAuthStateChanged(auth, (user)=>{
 
 
 
-document.getElementById("dashboard").style.display = "none";
-document.getElementById("admin-product-panel").style.display = "none";
 
     if(user){
 
-isAdmin = (user.email === "swaibuziraye22@gmail.com");
 
 
-        document.getElementById("auth-form").style.display = "none";
 
-        document.getElementById("customer-profile").style.display = "block";
+        if(user && user.email === "swaibuziraye22@gmail.com"){
 
-        document.getElementById("customer-name").innerText =
-            "Logged in as: " + user.email;
+    isAdmin = true;
 
-        // SHOW CUSTOMER ORDERS
-        document.getElementById("customer-orders-box").style.display = "block";
+    document.getElementById("dashboard").style.display = "block";
 
-        // LOAD CUSTOMER ORDERS
-        loadCustomerOrders();
+    document.getElementById("admin-product-panel").style.display = "block";
 
-    }else{
+}else{
 
-        document.getElementById("auth-form").style.display = "block";
+    isAdmin = false;
 
-        document.getElementById("customer-profile").style.display = "none";
+    document.getElementById("dashboard").style.display = "none";
 
-        // HIDE CUSTOMER ORDERS
-        document.getElementById("customer-orders-box").style.display = "none";
+    document.getElementById("admin-product-panel").style.display = "none";
 
+    document.getElementById("product-list").innerHTML = "";
+
+}
 
 loadProducts();
 loadOrders();
