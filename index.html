@@ -344,6 +344,15 @@ body {
     transition: 0.3s;
 }
 
+#admin-product-panel,
+#dashboard,
+#orders-section,
+#products-section,
+#admin-login{
+    display:none !important;
+}
+
+
 #drop-zone:hover {
     background: #fff3e6;
     transform: scale(1.01);
@@ -353,13 +362,7 @@ body {
     transform: scale(0.98);
 }
 
-#dashboard,
-#admin-login,
-#admin-product-panel,
-#orders-section,
-#products-section{
-    display:none;
-}
+
 
 </style>
 </head>
@@ -714,6 +717,16 @@ background:#f4f6f9;
 
 <div style="display:flex;">
 
+
+<!-- DASHBOARD -->
+<div id="dashboard" style="
+display:none;
+min-height:100vh;
+background:#f4f6f9;
+">
+
+<div style="display:flex;">
+
 <!-- SIDEBAR -->
 <div style="
 width:250px;
@@ -828,17 +841,6 @@ border-radius:12px;
 </div>
 </div>
 
-
-
-
-<!-- DASHBOARD -->
-<div id="dashboard" style="
-display:none;
-min-height:100vh;
-background:#f4f6f9;
-">
-
-<div style="display:flex;">
 
 <div id="orders-section" style="display:none;">
 
