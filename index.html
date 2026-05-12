@@ -2,6 +2,10 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>T-Petie Center</title>
 
 <style>
@@ -394,7 +398,7 @@ T-Petie
 <div class="hero"></div>
 
 <div id="admin-login" style="
-display:block;
+display:none;
 padding:20px;
 background:white;
 margin:20px auto;
@@ -1290,13 +1294,37 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let logo = document.querySelector(".topbar h2");
 
-    logo.addEventListener("dblclick", function(e){
+    let pressTimer;
 
-        e.preventDefault();
+logo.addEventListener("touchstart", function () {
+
+    pressTimer = setTimeout(() => {
 
         openAdminLogin();
 
-    });
+    }, 1200);
+
+});
+
+logo.addEventListener("touchend", function () {
+
+    clearTimeout(pressTimer);
+
+});
+
+logo.addEventListener("mousedown", function () {
+
+    pressTimer = setTimeout(() => {
+
+        openAdminLogin();
+
+    }, 1200);
+
+});
+
+logo.addEventListener("mouseup", function () {
+
+    clearTimeout(pressTimer);
 
 });
 
@@ -1495,16 +1523,19 @@ style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
             <h3>${p.name}</h3>
             <p class="price">UGX ${p.price}</p>
 
-            <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-<button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
-Edit
-
+            <button onclick="addToCart('${p.name}', ${p.price})">
+Add
 </button>
 
+${isAdmin ? `
+<button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
+Edit
+</button>
 
-            <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
-                Delete
-            </button>
+<button onclick="deleteProduct('${id}')" style="background:red;color:white;">
+Delete
+</button>
+` : ""}
         </div>
         `;
         shopContainer.innerHTML += `
