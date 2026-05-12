@@ -1502,42 +1502,53 @@ shopContainer.innerHTML = "";
         let p = docSnap.data();
         let id = docSnap.id;
 
-        container.innerHTML += `
-        <div class="product ${p.category}">
-            <div style="position:relative;">
-    <img src="${p.images && p.images.length > 0 ? p.images[0] : 'https://via.placeholder.com/150'}"
-style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
-    <div style="
-        position:absolute;
-        bottom:5px;
-        left:5px;
-        background:rgba(0,0,0,0.6);
-        color:white;
-        font-size:10px;
-        padding:2px 6px;
-        border-radius:4px;
-    ">
-        ${p.images ? p.images.length : 1} photos
-    </div>
-</div>
-            <h3>${p.name}</h3>
-            <p class="price">UGX ${p.price}</p>
+        
+container.innerHTML += `
+<div class="product ${p.category}">
 
-            <button onclick="addToCart('${p.name}', ${p.price})">
-Add
-</button>
+    <div style="position:relative;">
 
-${isAdmin ? `
-<button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
-Edit
-</button>
+        <img src="${p.images && p.images.length > 0 ? p.images[0] : 'https://via.placeholder.com/150'}"
+        style="width:100%;height:150px;object-fit:cover;border-radius:8px;">
 
-<button onclick="deleteProduct('${id}')" style="background:red;color:white;">
-Delete
-</button>
-` : ""}
+        <div style="
+            position:absolute;
+            bottom:5px;
+            left:5px;
+            background:rgba(0,0,0,0.6);
+            color:white;
+            font-size:10px;
+            padding:2px 6px;
+            border-radius:4px;
+        ">
+            ${p.images ? p.images.length : 1} photos
         </div>
-        `;
+
+    </div>
+
+    <h3>${p.name}</h3>
+
+    <p class="price">UGX ${p.price}</p>
+
+    <button onclick="addToCart('${p.name}', ${p.price})">
+        Add
+    </button>
+
+    ${isAdmin ? `
+
+    <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
+        Edit
+    </button>
+
+    <button onclick="deleteProduct('${id}')" style="background:red;color:white;">
+        Delete
+    </button>
+
+    ` : ""}
+
+</div>
+`;
+
         shopContainer.innerHTML += `
 
 <div class="product ${p.category}">
