@@ -366,10 +366,8 @@ body {
 
 #dashboard,
 #admin-login,
-#admin-product-panel,
-#orders-section,
-#products-section{
-    display:none;
+#admin-product-panel{
+    display:none !important;
 }
 
 </style>
@@ -867,23 +865,6 @@ border-radius:12px;
 </div>
 
 
-<div id="orders-section" style="display:none;">
-
-<div id="orders-list"></div>
-
-</div>
-
-<div id="products-section" style="display:none;">
-
-<h2>Products</h2>
-
-<div id="product-list"></div>
-
-
-</div>
-</div>
-
-</div>
 
 <!--
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
@@ -1538,6 +1519,8 @@ shopContainer.innerHTML = "";
         let id = docSnap.id;
 
         
+if(isAdmin){
+
 container.innerHTML += `
 <div class="product ${p.category}">
 
@@ -1569,8 +1552,6 @@ container.innerHTML += `
         Add
     </button>
 
-    ${isAdmin ? `
-
     <button onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.category}', '${p.images ? p.images[0] : ""}')">
         Edit
     </button>
@@ -1579,10 +1560,10 @@ container.innerHTML += `
         Delete
     </button>
 
-    ` : ""}
-
 </div>
 `;
+
+}
 
         shopContainer.innerHTML += `
 
@@ -1804,7 +1785,17 @@ window.customerLogout = async function(){
 // AUTO LOGIN DETECTION
 onAuthStateChanged(auth, (user)=>{
 
+isAdmin = false;
+
+document.getElementById("dashboard").style.display = "none";
+document.getElementById("admin-product-panel").style.display = "none";
+
     if(user){
+
+if(user.email === "swaibuziraye22@gmail.com"){
+    isAdmin = true;
+}
+
 
         document.getElementById("auth-form").style.display = "none";
 
