@@ -364,11 +364,7 @@ body {
     transform: scale(0.98);
 }
 
-#dashboard,
-#admin-login,
-#admin-product-panel{
-    display:none !important;
-}
+
 
 </style>
 </head>
@@ -1521,7 +1517,8 @@ shopContainer.innerHTML = "";
         let id = docSnap.id;
 
         
-if(isAdmin){
+
+if(isAdmin === true){
 
 container.innerHTML += `
 <div class="product ${p.category}">
@@ -1622,7 +1619,7 @@ window.uploadImage = async function(file){
 };
 
 // LOAD PRODUCTS ON START
-loadProducts();
+
 window.db = db;
 window.addDoc = addDoc;
 window.collection = collection;
@@ -1787,16 +1784,14 @@ window.customerLogout = async function(){
 // AUTO LOGIN DETECTION
 onAuthStateChanged(auth, (user)=>{
 
-isAdmin = false;
+
 
 document.getElementById("dashboard").style.display = "none";
 document.getElementById("admin-product-panel").style.display = "none";
 
     if(user){
 
-if(user.email === "swaibuziraye22@gmail.com"){
-    isAdmin = true;
-}
+isAdmin = (user.email === "swaibuziraye22@gmail.com");
 
 
         document.getElementById("auth-form").style.display = "none";
@@ -1820,6 +1815,10 @@ if(user.email === "swaibuziraye22@gmail.com"){
 
         // HIDE CUSTOMER ORDERS
         document.getElementById("customer-orders-box").style.display = "none";
+
+
+loadProducts();
+loadOrders();
 
     }
 
