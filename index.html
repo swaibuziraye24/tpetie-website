@@ -353,6 +353,14 @@ body {
     transform: scale(0.98);
 }
 
+#dashboard,
+#admin-login,
+#admin-product-panel,
+#orders-section,
+#products-section{
+    display:none;
+}
+
 </style>
 </head>
 
@@ -860,6 +868,21 @@ background:#f4f6f9;
 
 <!-- JS -->
 <script>
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    document.getElementById("dashboard").style.display = "none";
+
+    document.getElementById("admin-login").style.display = "none";
+
+    document.getElementById("admin-product-panel").style.display = "none";
+
+    document.getElementById("orders-section").style.display = "none";
+
+    document.getElementById("products-section").style.display = "none";
+
+});
+
 
 // ================= CART SYSTEM =================
 // Ensure cart syncs correctly
