@@ -360,16 +360,17 @@ body {
 
 <!-- TOP -->
 <div class="topbar">
-   <h2 
-ondblclick="openAdminLogin()"
+ 
+  <h2 
+onclick="openAdminLogin()"
 style="
 cursor:pointer;
-user-select:none;
--webkit-user-select:none;
+color:white;
 "
 >
-T-Petie
+T-Petie (Admin)
 </h2>
+
     <input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
     <span onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</span>
 </div>
@@ -378,7 +379,7 @@ T-Petie
 <div class="hero"></div>
 
 <div id="admin-login" style="
-display:none;
+display:block;
 padding:20px;
 background:white;
 margin:20px auto;
