@@ -361,14 +361,16 @@ body {
 <!-- TOP -->
 <div class="topbar">
  
-  <h2 
-onclick="openAdminLogin()"
+<h2 
+ondblclick="openAdminLogin()"
 style="
 cursor:pointer;
 color:white;
+user-select:none;
+-webkit-user-select:none;
 "
 >
-T-Petie (Admin)
+T-Petie
 </h2>
 
     <input class="search" placeholder="Search..." onkeyup="searchProducts(this.value)">
