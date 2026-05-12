@@ -377,6 +377,58 @@ T-Petie
 <!-- HERO -->
 <div class="hero"></div>
 
+<div id="admin-login" style="
+display:none;
+padding:20px;
+background:white;
+margin:20px auto;
+border-radius:12px;
+max-width:400px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+">
+
+<h2 style="text-align:center;">Admin Login</h2>
+
+<p style="text-align:center;color:gray;">
+Secure T-Petie Admin Access
+</p>
+
+<input id="admin-user"
+type="email"
+placeholder="Admin Email"
+style="
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+"><br><br>
+
+<input id="admin-pass"
+type="password"
+placeholder="Password"
+style="
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+"><br><br>
+
+<button onclick="adminLogin()" style="
+width:100%;
+padding:12px;
+background:#ff6600;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+">
+Login
+</button>
+
+</div>
+
 <div id="customer-auth" style="
 background:white;
 padding:15px;
@@ -768,58 +820,7 @@ border-radius:12px;
 </div>
 
 
-<div id="admin-login" style="
-display:none;
-padding:20px;
-background:white;
-margin:20px auto;
-border-radius:12px;
-max-width:400px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
-">
 
-
-  <h2 style="text-align:center;">Admin Login</h2>
-<p style="text-align:center;color:gray;">
-Secure T-Petie Admin Access
-</p>
-  
-<input id="admin-user"
-type="email"
-placeholder="Admin Email"
-style="
-width:100%;
-padding:12px;
-border:1px solid #ccc;
-border-radius:8px;
-"><br><br>
-
-
-  <input id="admin-pass"
-type="password"
-placeholder="Password"
-style="
-width:100%;
-padding:12px;
-border:1px solid #ccc;
-border-radius:8px;
-">
-  
- <button onclick="adminLogin()" style="
-width:100%;
-padding:12px;
-background:#ff6600;
-color:white;
-border:none;
-border-radius:8px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-">
-Login
-</button>
-
-</div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" style="
@@ -1155,12 +1156,21 @@ function showSection(sectionId){
 
 window.openAdminLogin = function(){
 
-    let loginBox = document.getElementById("admin-login");
+    const box = document.getElementById("admin-login");
 
-    if(loginBox.style.display === "block"){
-        loginBox.style.display = "none";
+    if(!box){
+        alert("Admin login box not found");
+        return;
+    }
+
+    if(box.style.display === "none" || box.style.display === ""){
+
+        box.style.display = "block";
+
     }else{
-        loginBox.style.display = "block";
+
+        box.style.display = "none";
+
     }
 }
 
