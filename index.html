@@ -635,6 +635,16 @@ margin-top:10px;
 
 
     <!-- SIDEBAR -->
+<!-- DASHBOARD -->
+<div id="dashboard" style="
+display:none;
+min-height:100vh;
+background:#f4f6f9;
+">
+
+<div style="display:flex;">
+
+<!-- SIDEBAR -->
 <div style="
 width:250px;
 background:#1f2937;
@@ -644,8 +654,6 @@ padding:20px;
 ">
 
 <h2 style="margin-top:0;">T-Petie Admin</h2>
-
-<div style="margin-top:30px;">
 
 <button onclick="showSection('dashboard-home')" style="
 width:100%;
@@ -688,34 +696,67 @@ Products
 
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div style="
 flex:1;
 padding:20px;
 ">
 
+<!-- HOME -->
 <div id="dashboard-home">
 
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+">
 
-        <div style="flex:1;background:#fff;padding:15px;border-radius:10px;">
-            <h4>Total Orders</h4>
-            <h2 id="total-orders">0</h2>
-        </div>
-
-        <div style="flex:1;background:#fff;padding:15px;border-radius:10px;">
-            <h4>Total Revenue</h4>
-            <h2 id="total-revenue">UGX 0</h2>
-        </div>
-
-        <div style="flex:1;background:#fff;padding:15px;border-radius:10px;">
-            <h4>Delivered</h4>
-            <h2 id="delivered-orders">0</h2>
-        </div>
-
-    </div>
+<div style="
+background:white;
+padding:20px;
+border-radius:12px;
+">
+<h3>Total Orders</h3>
+<h1 id="total-orders">0</h1>
 </div>
 
+<div style="
+background:white;
+padding:20px;
+border-radius:12px;
+">
+<h3>Total Revenue</h3>
+<h1 id="total-revenue">UGX 0</h1>
+</div>
+
+<div style="
+background:white;
+padding:20px;
+border-radius:12px;
+">
+<h3>Delivered</h3>
+<h1 id="delivered-orders">0</h1>
+</div>
+
+</div>
+
+</div>
+
+<!-- ORDERS -->
+<div id="orders-section" style="display:none;">
+<h2>Orders</h2>
+<div id="orders-list"></div>
+</div>
+
+<!-- PRODUCTS -->
+<div id="products-section" style="display:none;">
+<h2>Products</h2>
+<div id="product-list"></div>
+</div>
+
+</div>
+</div>
+</div>
 
 
 <div id="admin-login" style="
@@ -1054,6 +1095,10 @@ if(adminEmails.includes(email)){
 
     // SHOW ADMIN UI
     document.getElementById("dashboard").style.display = "block";
+
+    document.getElementById("products-section").style.display = "none";
+document.getElementById("orders-section").style.display = "none";
+document.getElementById("dashboard-home").style.display = "block";
     document.getElementById("admin-login").style.display = "none";
 document.getElementById("admin-product-panel").style.display = "block";
 }else{
@@ -1098,22 +1143,18 @@ function showSection(sectionId){
     document.getElementById(sectionId).style.display = "block";
 }
 
-if(!isAdmin){
-    alert("Admin only area");
-    return;
-}
 
-
-function openAdminLogin(){
+window.openAdminLogin = function(){
 
     let loginBox = document.getElementById("admin-login");
 
-    if(loginBox.style.display === "none"){
-        loginBox.style.display = "block";
-    }else{
+    if(loginBox.style.display === "block"){
         loginBox.style.display = "none";
+    }else{
+        loginBox.style.display = "block";
     }
 }
+
 
 function payNow(){
     alert("Payment system not yet connected.");
