@@ -368,6 +368,17 @@ body {
 
 
 </style>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+            registration.unregister();
+        }
+    });
+}
+</script>
+
 </head>
 
 <body>
@@ -795,20 +806,6 @@ border-radius:12px;
 <!-- JS -->
 <script>
 
-window.addEventListener("DOMContentLoaded", () => {
-
-    document.getElementById("dashboard").style.display = "none";
-
-    document.getElementById("admin-login").style.display = "none";
-
-    document.getElementById("admin-product-panel").style.display = "none";
-
-    document.getElementById("orders-section").style.display = "none";
-
-    document.getElementById("products-section").style.display = "none";
-
-});
-
 
 // ================= CART SYSTEM =================
 // Ensure cart syncs correctly
@@ -1028,9 +1025,6 @@ try {
     window.open(url, "_blank");
 };
 
-// FORCE ADMIN UI HIDDEN ON START
-document.getElementById("dashboard").style.display = "none";
-document.getElementById("admin-login").style.display = "none";
 
 
 let isAdmin = false;
@@ -1741,97 +1735,61 @@ window.customerLogout = async function(){
 
 
 // AUTO LOGIN DETECTION
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, async (user) => {
 
-
-
-
-    if(user){
-
-
-
-
-        if(user && user.email === "swaibuziraye22@gmail.com"){
-
-    isAdmin = true;
-
-    document.getElementById("dashboard").style.display = "block";
-
-    document.getElementById("admin-product-panel").style.display = "block";
-
-}else{
-
+    // ALWAYS HIDE EVERYTHING FIRST
     isAdmin = false;
 
     document.getElementById("dashboard").style.display = "none";
-
     document.getElementById("admin-product-panel").style.display = "none";
+    document.getElementById("orders-section").style.display = "none";
+    document.getElementById("products-section").style.display = "none";
 
+    // CUSTOMER UI
+    document.getElementById("auth-form").style.display = "block";
+    document.getElementById("customer-profile").style.display = "none";
+    document.getElementById("customer-orders-box").style.display = "none";
+
+    // CLEAR ADMIN PRODUCTS
     document.getElementById("product-list").innerHTML = "";
 
-}
+    // ================= USER LOGGED IN =================
+    if(user){
 
-loadProducts();
-loadOrders();
+        // CUSTOMER UI
+        document.getElementById("auth-form").style.display = "none";
+        document.getElementById("customer-profile").style.display = "block";
+
+        document.getElementById("customer-name").innerText =
+            "Logged in as: " + user.email;
+
+        document.getElementById("customer-orders-box").style.display = "block";
+
+        loadCustomerOrders();
+
+        // ================= ADMIN CHECK =================
+        if(user.email === "swaibuziraye22@gmail.com"){
+
+            isAdmin = true;
+
+            document.getElementById("dashboard").style.display = "block";
+
+            document.getElementById("admin-product-panel").style.display = "block";
+
+            document.getElementById("dashboard-home").style.display = "block";
+
+            loadOrders();
+
+        }
 
     }
 
+    // LOAD SHOP PRODUCTS FOR EVERYONE
+    loadProducts();
+
 });
 
-
-// ================= CUSTOMER ORDERS =================
-
-async function loadCustomerOrders(){
-
-    if(!auth.currentUser) return;
-
-    let container = document.getElementById("customer-orders-list");
-
-    if(!container) return;
-
-    container.innerHTML = "Loading orders...";
-
-    const snapshot = await getDocs(collection(db, "orders"));
-
-    let html = "";
-
-    snapshot.forEach(docSnap=>{
-
-        let o = docSnap.data();
-
-        if(o.customerEmail === auth.currentUser.email){
-
-            html += `
-            <div style="
-            background:#f9fafb;
-            padding:12px;
-            margin-bottom:10px;
-            border-radius:10px;
-            border-left:4px solid #ff6600;
-            ">
-
-            <strong>Order ID:</strong> ${o.orderId}<br>
-            <strong>Total:</strong> UGX ${o.total}<br>
-
-            <strong>Status:</strong>
-
-            <span style="
-            color:${o.status === 'Delivered' ? 'green' : 'orange'};
-            font-weight:bold;
-            ">
-            ${o.status}
-            </span>
-
-            </div>
-            `;
-        }
-
-    });
-
-    container.innerHTML = html || "No orders found";
-
-}
-
+   
 
 </script>
 
